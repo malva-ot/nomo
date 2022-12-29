@@ -1,0 +1,49 @@
+delimiter   = '"' | "'" | "(" | ")" | "," | "." | "/" | ":" 
+            | "<" | "=" | ">" | "[" | "\" | "]" | "{" | "}" ;
+space       = " ";
+letter      = ? Any Unicode code point with general category L (Letter) ?;
+mark        = ? Any Unicode code point with general category M (Mark) ?;
+number      = ? Any Unicode code point with general category N (Number) ?;
+punctuation = ? Any Unicode code point with general category P (Punctuation) ?;
+symbol      = ? Any Unicode code point with general category S (Symbol) ?;
+
+any_glyph     = letter | mark | symbol | number | punctuation | symbol | space;
+escaped_slash = "\", "\";
+escaped_quote = "\", "'";
+bare_glyph    = any_glyph - ( delimiter | space );
+glyph         = any_glyph - ( "\" | "'" );
+
+bare_string   = bare_glyph , { bare_glyph }; (* A bare string with at least one character *)
+quoted_string = "'" , { glyph | escaped_quote | escaped_slash } , "'";
+string        = bare_string | quoted_string;
+
+value          = null | string | tuple | map;
+
+null          = "";
+
+bare_tuple    = value , "," , value ,  { "," , value }; (* A tuple with at least two values *)
+tuple         = "(" , [ value , { "," , value } ] , ")";
+
+key_value_pair = string , "=" , value;
+bare_map       = key_value_pair , { "," , key_value_pair}; (* A map with at least one entry*) 
+map            = "{" , [ key_value_pair , { "," , key_value_pair } ] , "}";
+
+name           = string , { "." , string };
+name_key       = "[" , ( string | bare_tuple | tuple | bare_map | map ) , "]";
+keyed_name     = name , name_key;
+
+authority = string , "/";
+set_identifier = ( name | name_key | keyed_name ) , "::";
+group_name = name , ":";
+element_identifier = ( name | name_key | keyed_name );
+
+(* non_empty_qrn has at least one of its parts defined *)
+non_empty_qrn  = ( authority  , [set_identifier] , [group_name] , [element_identifier])
+               | ([authority] ,  set_identifier  , [group_name] , [element_identifier])
+               | ([authority] , [set_identifier] ,  group_name  , [element_identifier])
+               | ([authority] , [set_identifier] , [group_name] ,  element_identifier );
+ 
+(* All parts of a bracketed_qrn are optional *)
+bracketed_qrn  = "<" , [authority] , [set_identifier] , [group_name] , [element_identifier] , ">";
+
+qualified_resource_name = non_empty_qrn | bracketed_qrn;
