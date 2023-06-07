@@ -5,24 +5,92 @@
 |Part|Sections|Version|Date|
 |-|-|-|-|
 |Introduction and Purpose|1-3| -- |2022-12-29|
-|[Identifier primitives](#4-identifier-primitives)|5|`0.1.0`|2022-12-29|
-|[Schema primitives](#5-schema-primitives)|6|`0.1.0`|2022-12-29|
-|[Common schema](#6-common-schema)|7|`0.1.0`|2022-12-29|
+|[Identifier primitives](#4-identifier-primitives)|4|`0.1.0`|2022-12-29|
+|[Schema primitives](#5-schema-primitives)|5|`0.1.0`|2022-12-29|
+|[Common schema](#6-common-schema)|6|`0.1.0`|2022-12-29|
 |[Theoretical Background](#a1-theoretical-background)|Appx 1| -- |2022-11-21|
 
 ## 1. Introduction
 
 nomo is a standard for constructing identifiers that are unique, semantic, and mechanically easy to process. nomo describes identifiers that are not bound to any institutional or mechanical infrastructure, nor to any central authority.
+
+### 1.1 Examples
+
+To the point, here are several examples of [qualified resource names](#45-qualified-resource-name) rendered in the [common schema](#6-common-schema). These have not been published by the organizations cited, but are instead included as examples of how QRNs could be used in context.
+
+#### 1.1.1 ECMAScript Object.prototype.toString
+
+```
+ecma/es[11]::api:Object.prototype.toString
+```
+
+- `ecma` is the [authority](#451-authority), indicating that the organization [Ecma International](https://www.ecma-international.org/) declares this identifier
+- `es` is the [set name](#452-set), denoting here the set of concepts described in the [ECMAScript language specification](https://tc39.es/ecma262/)
+- `[11]` is the [set key](#452-set), denoting the [11th version of the language spec (ECMAScript 2020)](https://262.ecma-international.org/11.0/)
+- `api` is the [group name](#453-group), denoting a group of identifiers which represent the global API, as defined in [Section 18 - The Global Object](https://262.ecma-international.org/11.0/#sec-global-object)
+- `Object.prototype.toString` is the three-part [element name](#454-element) [`object`, `prototype`, `toString`], denoting here the `toString` prototype method of the `Object` type, described in [19.1.3.6 Object.prototype.toString()](https://262.ecma-international.org/11.0/#sec-object.prototype.tostring).
+
+#### 1.1.2 IRS Form 1040
+
+```
+US-IRS/forms[1982]::1040
+```
+
+- `US-IRS` is the authority, indicating that this identifier is declared by the United States Internal Revenue Service
+- `forms` is the set name, denoting here the set of forms published by the IRS
+- `1982` is the set key, denoting here the set of forms specifically as published in 1982
+- `1040` is the element name, denoting form 1040
+
+#### 1.1.3 Caffeine
+
+Many organizations have published identifiers for the common chemical caffeine. These can be rendered as QRNs to quickly embed the context required to understand the respective identifiers in reference to the publications which declare them:
+
+```
+acs/cas::58-08-2
+```
+
+- Authority: [American Chemical Society](https://www.acs.org/)
+- Set: [CAS Registry](https://www.cas.org/cas-data/cas-registry)
+- Element: [58-08-02](https://commonchemistry.cas.org/detail?cas_rn=58-08-2)
+
+```
+rsc/spider::2424
+```
+
+- Authority: [Royal Society of Chemistry](https://www.rsc.org/)
+- Set: [ChemSpider](http://www.chemspider.com/Default.aspx)
+- Element: [2424](https://www.chemspider.com/Chemical-Structure.2424.html)
+
+```
+カネヒサ/kegg::compound:C07481
+```
+
+- Authority: [Kanehisa Laboratories](https://www.kanehisa.jp)
+- Set: [KEGG](https://www.kegg.jp/)
+- Group: [Compounds](https://www.kegg.jp/kegg/compound/)
+- Element: [C07481](https://www.kegg.jp/entry/C07481)
+
+```
+kanehisa/kegg::drug:D00528
+```
+
+- Authority: [Kanehisa Laboratories](https://www.kanehisa.jp)
+- Set: [KEGG](https://www.kegg.jp/)
+- Group: [Drugs](https://www.kegg.jp/kegg/drug/)
+- Element: [D00528](https://www.kegg.jp/entry/D00528)
+
+
+### 1.2 Contents
  
-The practical product of nomo is a suggested [common schema](#6-common-schema) for validating, parsing, and serializing [qualified resource names](#45-qualified-resource-name) and their component [primitives](#4-identifier-primitives). This schema is built on lower levels of specification which are described first. It is expected and intended that the common schema may change over time, while the underlying primitives which the schema encodes will remain stable indefinitely.
+The practical product of nomo is a suggested [common schema](#6-common-schema) for validating, serializing, and parsing [qualified resource names](#45-qualified-resource-name) and their component [primitives](#4-identifier-primitives). This schema is built on lower levels of specification which are described first. It is expected and intended that the common schema may change over time, while the underlying primitives which the schema encodes will remain stable indefinitely.
 
 nomo includes three modules of specification:
 
 - [**Identifier primitives**](#4-identifier-primitives) - Abstract concepts that provide a mathematically complete description of an identifier
 - [**Schema primitives**](#5-schema-primitives) - Abstract concepts that describe how identifier primitives may be validated and mapped to or from strings
-- [**Common schema**](#6-common-schema) - An instance of a schema intended for general use in distributed computing
+- [**Common schema**](#6-common-schema) - An instance of a schema intended for general use in distributed computing and record-keeping
 
-### 1.1 Status
+### 1.3 Status
 
 This specification is a draft. Language may be contradictory or vague, though by accident and not intent. Comments, corrections, and contributions are welcome.
 
@@ -36,7 +104,7 @@ The [license](#2-license) of this work is designed for cultural works, [not sour
 
 nomo provides a consistent mechanism for constructing and evaluating semantic identifiers, for the purpose of facilitating systematic cooperation between humans, and between humans and automated information systems.
 
-nomo is designed to address situations where central allocation or arbitration of identifiers is impractical or undesirable, and yet it is useful n  that identifiers declared by unrelated parties be mutually intelligible and easy to disambiguate.
+nomo is designed to address situations where central allocation or arbitration of identifiers is impractical or undesirable, and yet it is useful that identifiers declared by unrelated parties be mutually intelligible and easy to disambiguate.
 
 ### 3.1 Characteristics 
 
@@ -82,7 +150,7 @@ The [common schema](#6-common-schema) does specify a related pair of glyph sets:
 
 The first level of qualification in a qualified resource name is the authority string. An authority string declared by one party is recognized by another party if and only if the recognizing party chooses to recognize it.
 
-Even the [common schema](#6-common-schema) does not provide a mechanism for establishing or agreeing upon ownership of an authority string, which in the common schema is simply any valid sequence of one or more Unicode code points. The authors of this standard regard this as an authentication question which is delegated to any mechanism of authentication which cooperating parties agree to use. The name "authority" was chosen for concept equivalence to a forthcoming distributed authentication protocol described by the same authors of this standard, but nomo itself does not require or demand any particular choice of authentication system.
+Even the [common schema](#6-common-schema) does not provide a mechanism for establishing or agreeing upon ownership of an authority string. The authors of this standard regard this as an authentication question which is delegated to any mechanism of authentication which cooperating parties agree to use. The name "authority" was chosen for concept equivalence to a forthcoming distributed authentication protocol described by the same authors of this standard, but nomo itself does not require or demand any particular choice of authentication system.
 
 ##### 3.1.4.3 Deterministic operations
 
@@ -90,7 +158,7 @@ Even the [common schema](#6-common-schema) does not provide a mechanism for esta
 
 #### 3.1.5 Durability
 
-A second order goal of all the characteristics described above is that nomo identifiers may be durable over time and space. While the authors intend to solve some immediate problems in distributed computing, they also aim to provide a means of establishing identifiers that can be communicated, understood, and continuously used across changing cultural and political boundaries, over indefinitely long time spans. Prime examples here include identification of persons, properties, documents, or industry and scientific standards.
+A second order goal of all the characteristics described above is that nomo identifiers may be durable over time and context. While the authors intend to solve some immediate problems in distributed computing, they also aim to provide a means of establishing identifiers that can be communicated, understood, and continuously used across changing cultural and political boundaries, over indefinitely long time spans. Prime examples here include identification of persons, properties, documents, or industry and scientific standards.
 
 Designing for durability is a key reason that the common schema included here is defined separately from the underlying primitives. One of the most important but also arbitrary decisions in that schema is the choice of characters used as delimiters between the serialized parts of an identifier. The characters chosen (including `/`, `:`, `,`, `.`, `=`, `[`, `]`) are a function of specific cultural and industrial conditions at the time of writing. Most importantly, these characters are available on the vast majority of computer keyboards in use at the time. From that limited set of potential glyphs, these were chosen for visual distinction such that human brains intuitively perceive segmentation between parts, and for analogy to existing symbolic uses of the same glyphs in computing, mathematics, and general use.
 
@@ -98,7 +166,7 @@ And yet these choices are not ideal. Mechanically and visually, it would be much
 
 And so we can hope that the current common schema may be superseded in the future by a more effective choice of delimiting characters, when the simple fact of keyboard layout or other input methods makes it easier for humans to express them. 
 
-By defining the identifier primitives and comparison relations independent of any particular serialization method, the nomo standard allows humans to make different serialization choices over time while maintaining backwards compatibility so that serializations under differing or obsolete schemas are still easy to process.
+By defining the identifier primitives and comparison relations independent of any particular serialization method, the nomo standard allows humans to make different serialization choices over time while maintaining backwards compatibility, or at least intelligibility, so that serializations under differing or obsolete schemas are still easy to process.
 
 #### 3.1.6 Platform independence
  
@@ -142,7 +210,7 @@ nomo defines the following identifier primitives:
 
 A nomo **glyph type** is a single symbolic datum which can be consistently represented and recognized. A **glyph set** is a set of one or more distinct glyph types. A **glyph** is an instance of a glyph type. 
 
-All these definitions imply a means to determine first whether any given glyph corresponds to a glyph type within a particular set, and second whether any two glyphs correspond to the same glyph type. Such an implementation is not defined in this section, rather it is an assumed precondition.
+All these definitions imply a means to determine whether any given glyph corresponds to a glyph type within a particular set. Such an implementation is not defined in this section, rather it is an assumed precondition.
 
 #### 4.1.1 Characters
 
@@ -164,7 +232,7 @@ Many natural writing systems have cultural rules about the ordering of written c
 
 Two distinct glyph sets are **compatible** if there is defined an unambiguous mutual mapping between at least one glyph type in one set with a glyph type in the other set. Two distinct glyph sets are **fully compatible** if both sets have the same count of glyph types, and for every glyph type in one set there exists an unambiguous mutual mapping to one glyph in the other set.
 
-Between compatible glyph sets, a mutually mapped glyph type is one set is **equivalent** to the glyph type in the other set to which it is mapped, and vice versa. 
+Between compatible glyph sets, a mutually mapped glyph type in one set is **equivalent** to the glyph type in the other set to which it is mapped, and vice versa. 
 
 When comparing two identifiers, where the respective glyph sets of the two identifiers are compatible, a particular glyph in one identifier is **equivalent** to a particular glyph in another identifier if the glyph type that the glyph in the first identifier represents is equivalent to the glyph type which the glyph in the other identifier represents.
 
@@ -225,7 +293,7 @@ Two values are equal if and only if they are composed from the same or compatibl
 The sameness of two strings is defined in [4.2 String](#42-string)
 
 #### 4.4.2 Tuple equality 
-Two tuples are equal if and only if:
+Two tuples are the same if and only if:
 
  - The glyph sets of the two tuples are the same or are compatible 
  - The two tuples have the same number of elements
@@ -235,7 +303,7 @@ A **name** therefore **is** a tuple where all the values are strings, and likewi
 
 #### 4.4.3 Map equality
 
-Two maps are equal if and only if:
+Two maps are the same if and only if:
 
  - The glyph sets of the two maps are the same or are compatible 
  - The two maps have the same number of key-value pairs
@@ -243,7 +311,7 @@ Two maps are equal if and only if:
 
 #### 4.4.4 Null equality
 
-Two null values are equal if and only if the glyph sets of the values are the same or compatible. 
+Two null values are the same if and only if the glyph sets of the values are the same or compatible.
 
 #### 4.4.5 Empty values
 
@@ -459,6 +527,7 @@ nomo defines the following compound string types, all of which include any delim
   - **tuple-string** - A [**tuple**](#44-value) value encoded as a single string
   - **map-string** - A [**map**](#44-value) value encoded as a single string
   - **qrn-string** - A [**QRN**](#45-qualified-resource-name) encoded as a single string
+  - **null-string** - A placeholder string which explicitly indicates a [null value](#44-value)
 
 #### 5.1.1 Identifier-string equivalence
 
@@ -467,6 +536,18 @@ The rules defined in [section 4](#4-identifier-primitives) strictly define wheth
 In addition, two identifier strings are **equivalent** if they [decode](#52-schema-operations) to the same identifier, even if the identifier-strings themselves are not the same. By definition, two identifier-strings that are the same are also equivalent.
 
 identifier-strings that are equivalent but not the same are valid and allowed, as described further under [5.2 Schema Operations](#52-schema-operations). Mechanisms such as *escape sequences* or allowance of for whitespace included in many practical schemas allow many distinct identifier-strings to deterministically decode to the same underlying identifier.
+
+#### 5.1.2 Identifier-string support
+
+Any valid schema must be able to represent name-strings and qrn-strings. 
+
+Schemas that allow tuple values must be able to represent tuple-strings, and likewise schemas that allow map values must be able to represent map-strings. 
+
+##### 5.1.2.1 null-strings
+
+No schema is required to represent non-empty null-strings, if other delimiters or punctuation unambiguously encode where null values would be. For example, the common schema tuple-string `(,,)` unambiguously encodes a tuple with three null values, even though the actual values are not represented by any glyphs at all. Instead, the tuple is encoded entirely by delimiting characters. 
+
+null-strings are instead defined above as a valid concept that schema designers may choose to use if desired, where a non-empty sequence of glyphs in a tuple-string or map-string is used to explicitly note a null value. Imagine for example a schema that requires all string values to be delimited with single quotes, and then also allows the literal glyph sequence `null` to denote a null value. The same tuple of three null values could be encoded even without surrounding parentheses as `null,null,null`. And this would be unambiguously different from the encoding of a sequence of three string values where the actual contents of each string are the literal characters n-u-l-l: `'null','null','null'`.
 
 ### 5.2 Schema Operations
 
@@ -489,7 +570,7 @@ The decode and validate algorithms may not define parameters.
 To reiterate, all three schema operations must be deterministic. 
 
 -  The encode operation allows parameters, therefore its output must depend solely on the combination of the parameters and input identifier. 
- - The validate operation does not allow parameters and takes an identifier as input, therefore solely on the input identifier
+ - The validate operation does not allow parameters and takes an identifier as input, therefore its output depends solely on the input identifier
  - The decode operations does not allow parameters but takes an identifier-string as input. This does allow for what are effectively decoding parameters to be embedded in an identifier-string.
 
 #### 5.2.3 Round Trip Stability
@@ -557,13 +638,13 @@ The [common schema](#6-common-schema), for example, uses Unicode for both its id
 
 This is not a violation of the prohibition on primitive glyph type properties. It is instead simply an implementation detail of the encode operation of the schema. Assigning an arbitrary unique integer in this manner to each glyph type in an identifier glyph set is one generic strategy for string ordering. Any number of other algorithms could also be constructed and would all be valid provided their output is deterministic. 
 
-Regardless, these mechanics are conceptually implementation details of encode operations rather than intrinsic properties of the glyph types themselves. Since the only requirement is to deterministically sort the *keys* of a map, which are entire strings, it is not even required that the algorithm have a predictable ordering based on glyph-by-glyph comparison. As long as `arrow` always comes before `zoo` which always comes before `apple`, we have a deterministic outcome, even though there is definitely not an intrinsic glyph-ordering relationship between `a` and `z`.
+Regardless, these mechanics are conceptually implementation details of encode operations rather than intrinsic properties of the glyph types themselves. Since the only requirement is to deterministically sort the *keys* of a map, which are entire strings, it is not even required that the algorithm have a predictable ordering based on glyph-by-glyph comparison. Some imaginary ordering algorithm that always sorts `arrow` before `zoo` but also `zoo` before `apple` is perfectly valid as long is it always yields the same outcome.
 
 It remains meaningless within nomo to ask whether one identifier or even identifier-string "comes before" another, or whether one identifier-string is some transformation of another.
 
 Finally, the strict requirement that encode operations be deterministic does not prevent parties from manually assembling valid equivalent identifier-strings merely by changing the order of encoded key-value pairs. All above the relations and constraints described in this specification continue to hold:
 
-Given a map with *n* key-value pairs, and the *n!* possible orderings of its key-value pairs in an encoded map-string
+Given a map with *n* key-value pairs, and the *n!* possible orderings (permutations) of its key-value pairs in an encoded map-string
 
  - Any of the *n!* encodings will decode back to the same map, because the definition of ["same" for a map](#443-map-equality) is defined without respect to key-value ordering
  - Applying the encode operation to the map will always produce the same one of the *n!* possible valid map-strings
@@ -583,17 +664,55 @@ It is intended and expected that cooperating parties will also find it useful to
 
 To the extent that the resulting standards can be expressed as mechanical glyph sets and algorithms as described in this [section 5](#5-schema-primitives), such standards are part of a schema and are therefore a nomo concern. Any and all of the infinite range of possible administrative, mechanical, and semantic rules which could be layered on top are and shall remain outside the scope of nomo.
  
+#### 5.4.1 Identifier Part Aliases
+
+The [identifier primitives](#4-identifier-primitives) and QRN parts are named according to generic concepts in set theory. In addition to validation rules that support a specific use case, schema authors may also wish to provide their own context-specific names for the identifier primitives, the parts of a QRN, or for the QRN concept itself.
+
+For example, imagine a schema that applies the QRN concept to identifying versioned data models and the definitions within those models. The schema authors may wish to define the following aliases, to facilitate clarity and understanding when working with this schema:
+
+|Part|Alias|Purpose|
+|-|-|-|
+|set name|domain|The set name is always used to define the domain (name) of the data model itself. The set is the set of definitions contained in that data model|
+|set key|domain version|The set key, if present, is always used to indicate a semver-conforming version of that domain|
+|group name|namespace|The group name, if present, is always used to specify a "namespace": A semantically-named, likely topical, subset of the overall data model|
+|element name|type|The element name is always used to specify a named type or entity within the data model|
+|element key|enum key|If an element key is present, it is used to identify a specific predefined value of an enumeration type|
+
+Ultimately, such aliases are merely a matter of technical communication between humans. The actual mechanics of identifiers and schemas do not depend on what humans choose to call the identifier types or the parts of a QRN. Take this section then as explicit encouragement to other authors to be creative and pragmatic with how they build on nomo concepts. The usefulness of all these ideas is enhanced by creativity in semantics on the one hand with conservation of mechanics on the other. 
+
+### 5.5 Bound Identifiers
+
+With the concept of a schema in hand, it becomes useful to also conceive of a particular QRN or other identifier as **bound** to a particular schema. All identifier primitives are implicitly bound to an identifier glyph set, but the validation, encode, and decode operations defined by a useful schema provide additional context that can help humans and machines known how to validate and understand an identifier-string.
+
+#### 5.5.1 Schema Embedding
+
+Because of this, schema authors may wish to consider defining a way in which to encode an indication of the schema to which a particular identifier is bound when producing an identifier-string. The common schema does this by allowing a schema-name prefix to bracketed qrn-strings.
+
+Note that allowing one schema to define how to encode the fact that some QRN is actually bound to another schema is not necessarily a contradiction. It is intended that authors use the underlying mechanics of the common schema -- including the schema name prefix of a qrn-string -- to build their own more restrictive schemas. Those more restrictive schemas will mostly add validation rules with in turn constrain the possible identifiers, while the substance of the encode and decode algorithms from the underlying common schema are fully preserved.
+
+In these cases, *any* valid derived schema will produce qrn-strings that are valid and parsable by the underling common schema rules. If the source qrn-string includes a schema name prefix, then the human or computer reading the qrn-string will be aware that there may also be additional validation rules, or interpretive context, which can be applied to the otherwise raw decoded QRN.
+
+As an example, would could define a schema that maps the parts of a generic QRN to any valid internet URL. The set name corresponds to the domain, with the set key used to specify an optional port and/or protocol. The group name represents all parts of the path that are followed by a slash. The element name represents the final part of the path if there is no trailing slash, and the element key can be used to encode URL parameters and/or a URL fragment. We could further define this schema such that the authority is optional, but if present must be `iana`, reflecting the fact that the IANA has the sole power to allocate the domain names that are the root of any internet URL.
+
+```
+url<iana/github.com[443]::malva-ot.nomo.blob.spec.main:common-schema.ebnf[#L49]>
+```
+
 ## 6. Common Schema
 
 This section describes an instance of a [schema](#53-schema-composition) intended for immediate use in distributed computing and general record keeping. It is defined strictly in relation to the digital standard Unicode, but should also be functional for printed or even hand-written use cases.
 
-The common schema is uses the [Unicode](https://home.unicode.org/) standard for its glyph sets. This is intentionally ambiguous with regards to Unicode version; the exact set of code points and characters recognized will depend on the version of Unicode used by interacting parties.
+The common schema uses the [Unicode](https://home.unicode.org/) standard for its glyph sets. This is intentionally ambiguous with regards to Unicode version; the exact set of code points and characters recognized will depend on the version of Unicode used by interacting parties.
 
-### 6.1 Identifier Glyph Set
+SEE https://www.unicode.org/reports/tr31/
+
+### 6.1 Glyph sets
+
+#### 6.1.1 Identifier Glyph Set
 
 The identifier glyph set of the common schema is all code points included in the Unicode character classes L (Letter), M (Mark), N (Number), P (Punctuation), and S (Symbol) which are preserved under Unicode [normalization form C](https://www.unicode.org/reports/tr15/tr15-53.html#Norm_Forms) (**c**omposition / NFC), plus the single simple space character (U+0020).
 
-### 6.2 Encoding Glyph Set
+#### 6.1.2 Encoding Glyph Set
 
 The encoding glyph set of the common schema is all code points included in the [Unicode](https://home.unicode.org/) character classes L (Letter), M (Mark), N (Number), P (Punctuation), and S (Symbol), plus the single simple space character (U+0020). 
 
@@ -601,45 +720,22 @@ For digital encoding, all common schema identifier-strings must use UTF-8.
 
 The [encode operation](#63-encode) defined next will always produce identifier-strings that only contain code points preserved under normalization form D, but alternative constructions that are converged through string normalization are also allowed. Per the definitions in [section 5](#5-schema-primitives), these alternative forms are all **equivalent** identifier-string encodings of the same underlying identifier.
 
-### 6.3 Validate
+Note the slight difference between the identifier and encoding glyph sets: Both glyph sets allow the same character classes plus the space character (U+0020), but the identifier glyph set allows only characters / code points which are preserved under normalization form C.
 
-The common schema allows all possible identifiers constructed from the [identifier glyph set](#61-identifier-glyph-set) according to the defined nomo [identifier primitives](#4-identifier-primitives), with the following exception:
+#### 6.1.3 Space
 
- - **Defined name parts may not be empty**. Empty names have zero segments. Names composed of at least one empty string are allowed.
- - **Defined key values may not be null**. This applies to the set key and element key parts. Empty strings, empty tuples, and empty maps are allowed. null values are allowed as elements of a tuple or values of a map.
+The common schema explicitly excludes all white space characters, except for the simple `SPACE` `U+0020` (`' '`) character, which may be included in string values.
 
-All parts of a QRN are still optional. The above constraints just express that *if* a name part is defined, it cannot be an empty name, and *if* a key part is defined, its value cannot be the null value.
+#### 6.1.4 Delimiters
 
-### 6.3 Encode
+The common schema uses a variety of delimiter characters to identify the parts of serialized identifier-strings. To avoid ambiguity in identifier-strings, source strings that contain delimiter characters must be escaped and quoted. 
 
-Any common schema identifier is encoded using the following general algorithm:
+##### 6.1.4.1 Explicit Delimiters
 
-1. Sort any maps
-2. Convert each string segment to its corresponding NFD form
-3. Escape strings 
-4. Delimit strings
-5. Recursively encode structured values
-6. Compose encoded parts
-
-#### 6.3.1 Sort maps
-
-Before performing any other operations, sort any map values contained in the identifier by sorting the keys in strict code-point order.
-
-#### 6.3.2 Convert strings to NFD
-
-All nomo identifiers are composed of strings. Compound structures such as tuples, maps, and names are ultimately composed solely of strings or null values. For each component string of an identifier, convert that string to its normalization form D, as defined in the Unicode standard.
-
-#### 6.3.3 Escape strings
-
-Insert a single backslash (`\`, `U+005C`) character before any existing instance of either an apostrophe (`'`, `U+0027`) or backslash (`\`, `U+005C`) in any string.
-
-#### 6.3.4 Delimit strings
-
-Enclose any string in a pair of single-quote / apostrophe characters (`'`, `U+0027`) if the string is empty (zero-length), or if it contains any of the following code points:
+The following 16 code points are defined as **explicit delimiter** characters in the common schema:
 
 |Code||Description|
 |-|-|-|
-|U+0020|` `|Space|
 |U+0022|`"`|Quotation|
 |U+0027|`'`|Apostrophe|
 |U+0028|`(`|Left parenthesis|
@@ -657,13 +753,124 @@ Enclose any string in a pair of single-quote / apostrophe characters (`'`, `U+00
 |U+007B|`{`|Left curly brace|
 |U+007D|`}`|Right curly brace|
 
-#### 6.3.5 Encode structures
+##### 6.1.4.2 Implicit Delimiters
 
-##### 6.3.5.1 Names
+In addition, any code point that decomposes to one of the explicit delimiters through normalization form NFKD (Compatibility Decomposition) is an **implicit delimiter**. For example, the following code points all decompose to `LEFT PARENTHESIS` `(` `U+002B` via NFKD:
+
+|Code||Description|
+|-|-|-|
+|U+207D|`⁽`|SUPERSCRIPT LEFT PARENTHESIS|
+|U+208D|`₍`|SUBSCRIPT LEFT PARENTHESIS| 
+|U+FE59|`﹙`|SMALL LEFT PARENTHESIS| 
+|U+FF08|`（`|FULLWIDTH LEFT PARENTHESIS|
+
+###### 6.1.4.2.1 Rationale for Implicit Identifiers
+
+Implicit delimiters are defined as delimiters for the sake of the encoding operation to avoid visual confusion for humans. 
+
+Implicit identifiers that are preserved under normalization forms NFC and NFD need no special handling for a computer. A computer processing a string as a series of code points (really, integers), there is no perceived relation or collision between the integer 8317 (`SUPERSCRIPT LEFT PARENTHESIS` `⁽` `U+207D`) and the integer 43 (`LEFT PARENTHESIS` `(` `U+002B`).
+
+But nomo identifiers are intended to facilitate cooperation with and between humans as much as with machines, so the common schema requires that string values containing implicit delimiters also be quoted, to avoid confusion for humans reading identifier-strings.
+
+##### 6.1.4.3 Additional Psuedo-Delimiters
+
+Defining implicit delimiters in terms of NFKD decomposition is still not a fool-proof way of preventing visual confusion, as there are many other punctuation and symbol characters in Unicode that do not have a defined decomposition rule even though they are also visually similar to an explicit delimiter character. As an example, `MEDIUM LEFT PARENTHESIS ORNAMENT` `❨` `U+2768` visually appears just as similar to `LEFT PARENTHESIS` `(` `U+002B` as the four other characters above, but as of this writing it does not have a decomposition rule to `LEFT PARENTHESIS`, and so is not defined as a delimiter for this specification.
+
+### 6.2 Algorithms
+
+#### 6.2.1 Validate
+
+The common schema validate algorithm includes just two rules: empty names are disallowed, and all strings must be in Unicode normalization form C.
+
+##### 6.2.1.1 Empty names
+
+The common schema allows all possible identifiers constructed from the [identifier glyph set](#61-identifier-glyph-set) according to the defined nomo [identifier primitives](#4-identifier-primitives), with the following exception:
+
+ - **Defined name parts may not be empty**. Empty names have zero segments. Names composed of at least one empty string are allowed.
+
+All parts of a QRN are still optional. The above constraints just express that *if* a name part is defined, it cannot be an empty name. The difference between these three situations may best be represented with a short snippet of JavaScript for an imaginary QRN object, where names are represented as arrays of strings:
+
+```js
+qrn.setName = null     // OK: No set name at all
+qrn.setName = [ '' ]   // OK: Defined set name with one segment which is an empty string
+qrn.setName = []       // NOT OK: Defined set name which has no segments
+```
+
+This still does not require that a set name be present for a set key to be present, nor for an element name to be present for an element key to be present. Restated in the positive: The common schema allows a set key to be defined even if the set name is missing, and allows an element key to be defined even if the element name is missing.
+ 
+Note that the definition of the QRN itself already specifies that a set or element key value of `null` has the same meaning as a missing/undefined key value. In other words, saying that a QRN has no element key means the same thing as saying that a QRN has an element key with the value `null`. See [4.5.5 Empty and Missing Parts](#455-empty-and-missing-parts).
+
+##### 6.2.1.2 Normalization Form C
+
+A common schema identifier is valid if and only if processing each string in the identifier following the Unicode normalization algorithm for normalization form C yields exactly zero changes in the code points of each respective string.
+
+##### 6.2.1.3 Other rules
+
+The common schema itself is defined primarily as a foundation for serialization and mutual intelligibility in distributed record-keeping, and particularly (but not exclusively) distributed computing. It is entirely expected that cooperating parties may define their own more restrictive validation rules in derived schemas, in the same way they may define [their own QRN semantics](#47-user-defined-qrn-semantics), while still leveraging the underlying encoding and decoding algorithms defined here in the common schema. 
+
+For example, it would likely be desired to disallow empty name segments, as empty segments provide little semantic value, even if the common schema can safely encode them:
+
+```
+''.''/''::''['',]
+```
+
+_Valid but unhelpful common schema QRN composed entirely of empty strings and null values_ 
+
+##### 6.2.1.4 Identifier-string support
+
+As the common schema is meant to be as broadly useful as possible, it allows identifier-strings that are not associated with a QRN. The decode algorithm includes deterministic rules for interpreting an input identifier-string as one of the following:
+
+- tuple-string: A bare encoded tuple value, not associated with a QRN part
+- map-string: A bare encoded map value, not associated with a QRN part
+- name-string: A bare encoded name value, not associated with a QRN part
+- qrn-string: A encoded QRN, with none, any, or all parts defined
+- null-string: An encoded atomic null value
+
+###### 6.2.1.4.1 null-string
+
+A valid null-string is any sequence of exactly four code points, where the possible code points at each position are shown below:
+
+|Position|Code Points||
+|-|-|-|
+|1|`N (U+004E)`|`n (U+006E)`|
+|2|`U (U+0055)`|`u (U+0075)`|
+|3|`L (U+004C)`|`l (U+006C)`|
+|4|`L (U+004C)`|`l (U+006C)`|
+
+#### 6.2.2 Encode
+
+Any common schema identifier is encoded using the following general algorithm:
+
+1. Convert each string segment to its corresponding [Unicode NFD form](https://www.unicode.org/reports/tr15/tr15-53.html#Norm_Forms)
+2. Sort any maps
+3. Escape strings 
+4. Delimit strings
+5. Recursively encode structured values
+6. Compose encoded parts
+
+##### 6.2.2.1 Convert strings to NFD
+
+All nomo identifiers are composed of strings. Compound structures such as tuples, maps, and names are ultimately composed solely of strings or null values. For each component string of an identifier, convert that string to its normalization form D, as defined in the Unicode standard.
+
+##### 6.2.2.2 Sort maps
+
+Before performing any other operations, sort any map key-value pairs contained in the identifier by sorting the keys in strict code-point order. Per the previous step, all map keys should already be in Unicode NFD form.
+
+##### 6.2.2.3 Escape strings
+
+Insert a single backslash (`\`, `U+005C`) character before any existing instance of either an apostrophe (`'`, `U+0027`) or backslash (`\`, `U+005C`) in any string.
+
+##### 6.2.2.4 Delimit strings
+
+Enclose any string in a pair of single-quote / apostrophe characters (`'`, `U+0027`) if the string is empty (zero-length), or if it contains a **delimiter**, as defined in [section 6.1.4](#614-delimiters), or if the entire string is a valid null-string
+
+##### 6.2.2.5 Encode structures
+
+###### 6.2.2.5.1 Names
 
 Encode each **name** value in the set name, group name, or element name by concatenating its parts in order, separated by a single period (`.`, `U+002E`) between each pair of segments. If the entire identifier is a name outside the context of a QRN, encode it the same way.
 
-##### 6.3.5.2 Tuples
+###### 6.2.2.5.2 Tuples
 
 Encode each **tuple** value as follows (except for names as already encoded in the previous section):
 
@@ -671,7 +878,7 @@ Encode each **tuple** value as follows (except for names as already encoded in t
  2. Concatenate the elements in order, separated by a single comma (`,`, `U+002C`) between each pair of elements.
  3. Enclose the concatenated elements with a matching pair of parenthesis (`(`, `U+0028` and `)`, `U+0029`) unless the tuple has at least two values, and is the top-level value of a set or element key.
 
-##### 6.3.5.3 Maps
+###### 6.2.2.5.3 Maps
 
 Encode each **map** value as follows:
 
@@ -680,17 +887,17 @@ Encode each **map** value as follows:
   3. Concatenate the encoded key-value pairs in the order already set in step 1 of encoding, separating each pair of encoded key-value pairs with a single comma (`,`, `U+002C`).
   4. Enclose the concatenated key-value pairs with a matching pair of curly braces (`{`, `U+007B` and `}`, `U+007D`) unless the map has at least one key-value pair and is the top-level value of a set or element key.
 
-##### 6.3.5.4 Nulls
+###### 6.2.2.5.4 Nulls
 
 Null values are omitted from the encoded identifier-string. The presence of a null value as an element of a tuple, or value of a key-value pair of a map, is unambiguously denoted by the surrounding delimiters in the encoded identifier-string.
 
-#### 6.3.6 Encode keyed names
+###### 6.2.2.5.5 Encode keyed names
 
 If the identifier has a defined, non-null set key, enclose its encoded value with a matching pair of square brackets (`[`, `U+005B` and `]`, `U+005D`) and append it to the encoded set name, if any.
 
 If the identifier has a defined, non-null element key, enclose its encoded value with a matching pair of square brackets (`[`, `U+005B` and `]`, `U+005D`) and append it to the encoded element name, if any.
 
-#### 6.3.7 Compose
+##### 6.2.2.6 Compose
 
 Finally, compose the completed identifier-string through the following operations:
 
@@ -702,7 +909,7 @@ Finally, compose the completed identifier-string through the following operation
 
 This concludes the encode algorithm.
 
-#### 6.3.8 Manual encoding
+##### 6.2.2.7 Manual encoding
 
 Automated implementations of the common schema *must* follow the deterministic steps described above, applying enclosing or delimiting characters only when specified in the preceding steps. However, identifier-strings constructed directly may include the following valid alternatives forms that would not be produced by the encode algorithm:
 
@@ -710,9 +917,9 @@ Automated implementations of the common schema *must* follow the deterministic s
 - A tuple value *may* always be enclosed in parenthesis, even if it is the top-level value of a set or element key
 - A map value *may* always be enclosed in curly braces, even if it is the top-level value of a set or element key
 - An entire QRN value *may* always be enclosed in angle brackets, even if it has one or more defined parts
-- Strings may contain code point sequences that would be transformed through string normalization to normalization form D 
+- Strings may contain code point sequences that would be transformed through string normalization to normalization form D
 
-### 6.4 Decode
+#### 6.2.3 Decode
 
 A common-schema identifier-string is decoded using the following general algorithm:
 
@@ -721,86 +928,91 @@ A common-schema identifier-string is decoded using the following general algorit
 3. Assign structures to parts
 4. Unquote strings
 5. Unescape strings
+6. Normalize to NFC
 
 More efficient streaming or stack-based algorithms can be defined, but are left to implementers.
 
-#### 6.4.1 Tokenization
+##### 6.2.3.1 Syntax Errors
+
+For consistency between implementations, the common schema defines the following syntax error types. The verbal descriptions of the decode process below indicate when decoding should fail, and with which error type.
+
+|Error|Description|
+|-|-|
+|UNCLOSED_STRING|A quoted string value has no closing quote character|
+|UNCLOSED_QRN_|A bracketed QRN is missing the closing bracket|
+
+
+##### 6.2.3.1 Tokenization
 
 An input identifier-string can be naively tokenized as follows.
 
 1. Identify all `delimited-string` tokens
 
-   Scanning the characters of the complete identifier-string in order, an apostrophe (`'`, `U+0027`) denotes the beginning of a new `delimited-string` token and is included as the first character of the token. All subsequent characters belong to the `delimited-string` until another apostrophe is encountered, unless that apostrophe is immediately preceded by a backslash (`\`, `U+005C`). The first subsequent *non-escaped* apostrophe encountered denotes the end of the `delimited-string` token, and is included as the last character of the token. If the end of the identifier-string is reached without encountering a non-escaped apostrophe, the identifier-string is syntactically invalid.
+   Scanning the characters of the complete identifier-string in order, an apostrophe (`'`, `U+0027`) denotes the beginning of a new `delimited-string` token and is included as the first character of the token. All subsequent characters belong to the `delimited-string` until another apostrophe is encountered, unless that apostrophe is immediately preceded by a backslash (`\`, `U+005C`). The first subsequent *non-escaped* apostrophe encountered denotes the end of the `delimited-string` token, and is included as the last character of the token. If the end of the identifier-string is reached without encountering a non-escaped apostrophe, the decoding fails with `UNCLOSED_STRING` error.
 
-2. Identify remaining `string` and `symbol` tokens
+2. Identify remaining `string` and `delimiter` tokens
 
    Re-scanning the characters of the complete identifier-string in order:
    
    - If the character is already part of a `delimited-string` token, ignore and continue
-   - If the character is any character in the table in [section 6.3.4](#634-delimit-strings), it is a single-character `symbol` token
-   - Otherwise, the character is the first character of a new `string` token. The `string` token contains all contiguous subsequent characters that are not already part of a `delimited-string` token and are not in the table in [section 6.3.4](#634-delimit-strings)
+   - If the character is an **explicit delimiter** [section 6.1.4.1](#6141-explicit-delimiters), it is a single-character `delimiter` token
+   - Otherwise, the character is the first character of a new `string` token. The `string` token contains all contiguous subsequent characters that are not already part of a `delimited-string` token and are not an explicit delimiter.
 
-The above simple algorithm will divide all characters in the input identifier-string into a series of `symbol`, `string`, and `delimited-string` tokens.
+The above simple algorithm will divide all characters in the input identifier-string into a series of `delimiter`, `string`, and `delimited-string` tokens.
 
-#### 6.4.2 Validate and group structures
+##### 6.2.3.2 Validate and group structures
 
 A complete and efficient algorithm for parsing and validating the tokens from the previous step is a standard enough exercise but tiresome to include here. Instead, we provide a description of a valid identifier-string token sequence as a EBNF grammar as follows:
 
 ```ebnf
 backslash   = ? \ ?
-delimiter   = '"' | "'" | "(" | ")" | "," | "." | "/" | ":" 
-            | "<" | "=" | ">" | "[" | backslash | "]" | "{" | "}" ;
-            
-space         = " ";
-letter        = ? Any Unicode code point with general category L (Letter) ?;
-mark          = ? Any Unicode code point with general category M (Mark) ?;
-number        = ? Any Unicode code point with general category N (Number) ?;
-punctuation   = ? Any Unicode code point with general category P (Punctuation) ?;
-symbol        = ? Any Unicode code point with general category S (Symbol) ?;
+delimiter           = '"' | "'" | "(" | ")" | "," | "." | "/" | ":" 
+                    | "<" | "=" | ">" | "[" | backslash | "]" | "{" | "}" ;
+space               = " ";
+letter              = ? Any Unicode code point with general category L (Letter) ?;
+mark                = ? Any Unicode code point with general category M (Mark) ?;
+number              = ? Any Unicode code point with general category N (Number) ?;
+punctuation         = ? Any Unicode code point with general category P (Punctuation) ?;
+symbol              = ? Any Unicode code point with general category S (Symbol) ?;
 
-any_glyph     = letter | mark | symbol | number | punctuation | symbol | space;
-escaped_slash = backslash, backslash;
-escaped_quote = backslash, "'";
-bare_glyph    = any_glyph - ( delimiter | space );
-glyph         = any_glyph - ( backslash | "'" );
+any_glyph           = letter | mark | symbol | number | punctuation | symbol | space;
+escaped_slash       = backslash, backslash;
+escaped_quote       = backslash, "'";
+bare_glyph          = any_glyph - ( delimiter | space );
+glyph               = any_glyph - ( backslash | "'" );
 
-(* Bare strings may not contain delimiters or
-   spaces, and must be at least one character *)
-bare_string   = bare_glyph , { bare_glyph }; 
-quoted_string = "'" , { glyph | escaped_quote | escaped_slash } , "'";
-string        = bare_string | quoted_string;
+bare_string         = bare_glyph , { bare_glyph }; (* A bare string with at least one character *)
+quoted_string       = "'" , { glyph | escaped_quote | escaped_slash } , "'";
+string              = bare_string | quoted_string;
 
-value         = null | string | tuple | map;
+value               = null | string | tuple | map;
 
-(* The null value emits no characters *)
-null          = "";
+null                = "";
 
-(* Bare tuples must have at least two elements *) 
-bare_tuple    = value , "," , value ,  { "," , value }; 
-tuple         = "(" , [ value , { "," , value } ] , ")";
+bare_tuple          = value , "," , value ,  { "," , value }; (* A tuple with at least two values *)
+tuple               = "(" , [ value , { "," , value } ] , ")";
 
-(* Bare maps must have at least one key_value_pair *) 
-key_value_pair = string , "=" , value;
-bare_map       = key_value_pair , { "," , key_value_pair};
-map            = "{" , [ key_value_pair , { "," , key_value_pair } ] , "}";
+key_value_pair      = string , "=" , value;
+bare_map            = key_value_pair , { "," , key_value_pair}; (* A map with at least one entry*) 
+map                 = "{" , [ key_value_pair , { "," , key_value_pair } ] , "}";
 
-name           = string , { "." , string };
-name_key       = "[" , ( string | bare_tuple | tuple | bare_map | map ) , "]";
-keyed_name     = name , name_key;
+name                = string , { "." , string };
+name_key            = "[" , ( string | bare_tuple | tuple | bare_map | map ) , "]";
+keyed_name          = name , name_key;
 
-authority      = string , "/";
-set_identifier = ( name | name_key | keyed_name ) , "::";
-group_name     = name , ":";
-element_identifier = ( name | name_key | keyed_name );
+authority           = string , "/";
+set_identifier      = ( name | name_key | keyed_name ) , "::";
+group_name          = name , ":";
+element_identifier  = ( name | name_key | keyed_name );
 
 (* non_empty_qrn has at least one of its parts defined *)
-non_empty_qrn  = ( authority  , [set_identifier] , [group_name] , [element_identifier])
-               | ([authority] ,  set_identifier  , [group_name] , [element_identifier])
-               | ([authority] , [set_identifier] ,  group_name  , [element_identifier])
-               | ([authority] , [set_identifier] , [group_name] ,  element_identifier );
+non_empty_qrn       = ( authority  , [set_identifier] , [group_name] , [element_identifier])
+                    | ([authority] ,  set_identifier  , [group_name] , [element_identifier])
+                    | ([authority] , [set_identifier] ,  group_name  , [element_identifier])
+                    | ([authority] , [set_identifier] , [group_name] ,  element_identifier );
  
 (* All parts of a bracketed_qrn are optional *)
-bracketed_qrn  = "<" , [authority] , [set_identifier] , [group_name] , [element_identifier] , ">";
+bracketed_qrn       = "<" , [authority] , [set_identifier] , [group_name] , [element_identifier] , ">";
 
 qualified_resource_name = non_empty_qrn | bracketed_qrn;
 ```
@@ -811,7 +1023,7 @@ qualified_resource_name = non_empty_qrn | bracketed_qrn;
 
 nomo is based on three theoretical concepts: finite sequences, discrete patterns, and perfect coherence.
 
-A finite sequence is a well-defined mathematical concept that is also easy to intuit. Informally, it's an ordered list. 
+A finite sequence is a well-defined mathematical concept that is also easy to intuit. Informally, it is an ordered list. 
 
 Formally, it is a countable, finite set of zero values, exactly one value, *or* of multiple values where all possible pairs of values have an unambiguous relationship such that one of the pair comes *before* the other, there is a first value, and there is a last value.
 
@@ -827,7 +1039,7 @@ And yet no two brains have exactly the same representation of "bird", either as 
 
 
 
-nomo is concerned only with patterns that can be reproduced with perfo, so that a pattern only exists to the extent it can be consistently produced or consumed, and correlation exists only to the extent a pattern being correlated can be identified.
+nomo is concerned only with patterns that can be reproduced with perfo, so that a pattern only exists to the extent it can be consistently produced or consumed, and coherence exists only to the extent a pattern being correlated can be identified.
 
 ### A1.1 Pattern
  
@@ -849,7 +1061,7 @@ Likewise integers are intrinsically discrete, but the value of any given integer
  
 #### A1.1.2 Communicability
 
-nomo is a specification for identifiers: symbolic references to something else. They are only useful if the component patterns can be reproduced and recognized multiple times, usually by multiple pattern processing systems, including human brains. In other words, the components patterns must be communicable.
+nomo is a specification for identifiers: symbolic references to something else. They are only useful if the component patterns can be reproduced and recognized multiple times, usually by multiple pattern processing systems, including human brains. In other words, the component patterns must be communicable.
 
 #### A1.1.3 Uniqueness
 
@@ -857,17 +1069,17 @@ Any theoretical pattern could be defined or distinguished by any number of attri
 
 nomo is instead exclusively concerned with whether an instance of some pattern can be identified as "this one", "that one", or "not any them". 
 
-### A1.2 Correlation
+### A1.2 Coherence
 
-Correlation is an emergent property of the interactions between a pattern and a pattern processing system. It is an abstract measure of how consistent the processing system is at recognizing or reproducing patterns.
+Coherence is an emergent property of the interactions between a pattern and a pattern processing system. It is an abstract measure of how consistent the processing system is at recognizing or reproducing patterns.
  
-Correlation is therefore a practical measure of communicability. 
+Coherence is therefore a practical measure of communicability. 
 
 #### A1.2.1 Perfection
 
-Perfect correlation is a property of discrete patterns and associated pattern processing systems where exactly zero information is lost or changed through reproduction and recognition. It is analogous to superconductivity, where in some materials under certain conditions electrical resistance drops to exactly zero, allowing an electrical current to flow indefinitely with zero loss.
+Perfect coherence is a property of discrete patterns and associated pattern processing systems where exactly zero information is lost or changed through reproduction and recognition. It is analogous to superconductivity, where in some materials under certain conditions electrical resistance drops to exactly zero, allowing an electrical current to flow indefinitely with zero loss.
 
-Perfect correlation is achievable with sufficiently distinct discrete patterns, such that the pattern can be reproduced and recognized an indefinite number of times with exactly zero information loss or corruption.
+Perfect coherence is achievable with sufficiently distinct discrete patterns, such that the pattern can be reproduced and recognized an indefinite number of times with exactly zero information loss or corruption.
 
 ### A1.3 Implementation dependence
 
