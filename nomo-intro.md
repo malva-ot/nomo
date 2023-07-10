@@ -150,7 +150,7 @@ Any of these mediums can in fact be used to construct an identifier consistent w
 
 At the base are the atomic **glyphs** of an identifier. Glyphs are in turn combined in sequences to form **strings**. Finally, strings are arranged in a limited set of structures to form **identifiers**.
 
-Most of the meaning of an identifier is conveyed through the context and structure defined and allowed in the identifier layer. 
+The structures defined at the identifier layer provide a way to express both semantic and mechanical content in addition to the human meanings expressed in the component strings of an identifier. 
 
 #### 4.1.1 Discrete
 
@@ -172,19 +172,19 @@ Once again, this eliminates an infinite range of emergent or compositional infor
 
 #### 4.1.3 Sequential
 
-The identification of "which atom" within a **string** is strictly determined by sequence. The only meaningful concept is the ordinal of an atom (glyph) within the sequence. While the mapping of a given glyph type to an integer is arbitrary, the ordinal of a particular glyph within a string is strictly defined and maps directly to the natural numbers. There is a first glyph, a second glyph, etc. through the nth glyph of a string.
+The identification of "which atom" within a **string** is strictly determined by sequence. The only meaningful concept is the ordinal of an glyph within the sequence. While the mapping of a given glyph type to an integer is arbitrary, the ordinal of a particular glyph within a string is strictly defined and maps directly to the natural numbers. There is a first glyph, a second glyph, etc. through the nth glyph of a string.
 
-This intentionally excludes any other means of distinguishing a string or relating string by any other spatial, conceptual, or mathematical relationship.
+This intentionally excludes any other means of distinguishing a string or relating strings by any other spatial, conceptual, or mathematical relationship.
 
 This too eliminates an infinite range of potential structural information for the benefit of also eliminating an infinite range of both complexity and ambiguity. Once again, note that a limited but powerful set of structural information **is** added through the definitions of composed identifiers.
 
 #### 4.1.4 Associative
 
-The nature of the structures defined at the identifier layer are described in detail in [**Nomo: Identifier Primitives**](./nomo-id-primitives.md). Those structures provide a limited set of ways in which to **associate** multiple. Most importantly, a **name** is a simple sequence of strings, while a **qualified resource name** is a set of names and other structures, where each part is associated with a specific predefined concept related to set theory: In short, a principal, a set, a subset, and an element.
+The nature of the structures defined at the identifier layer are described in detail in [**Nomo: Identifier Primitives**](./nomo-id-primitives.md). Those structures provide a limited set of ways in which to **associate** multiple strings to form a larger identifier. Most importantly, a **name** is a simple sequence of strings, while a **qualified resource name** is a set of names and other structures, where each part is associated with a specific predefined concept related to set theory: In short, a principal, a set, a subset, and an element.
 
 #### 4.1.5 Context-free
 
-All the above attributes, and likely other related ideas, can be summarized to say that both atoms (glyphs) and sequences (strings) are context-free. The interpretation of a string is strictly determined by the interpretation of each glyph within the string, and the interpretation of each glyph is independent of any other possible context, including its ordinal within the string. An `A` is always an `A`, regardless of where in a string it appears.
+All the above attributes, and likely other related ideas, can be summarized to say that both the atoms (glyphs) and sequences (strings) of a Nomo identifier are context-free. The interpretation of a string is strictly determined by the interpretation of each glyph within the string, and the interpretation of each glyph is independent of any other possible context, including its ordinal within the string. An `A` is always an `A`, regardless of where in a string it appears.
 
 ##### 4.1.5.1 Unordered evaluation
 
@@ -250,13 +250,13 @@ By definition, all 24 of these sequences are in Nomo the **same** string. The ad
 
 ### 4.2 Violations and resolutions
 
-The combination of context-free atomic glyphs and simple sequential strings are essential to the simplicity and non-ambiguity of Nomo identifiers. This in turn serves the above noted purposes of both mechanical clarity and uniqueness. 
+The combination of context-free atomic glyphs and simple sequential strings is essential to the simplicity and non-ambiguity of Nomo identifiers. This in turn serves the above noted purposes of both mechanical clarity and uniqueness. 
 
 And yet, many of the world's scripts include compound constructions that on the surface violate the atomicity of glyphs, the strictly sequential nature of strings, or both. It is very much intended that humans will use natural language in many different scripts to compose the component strings of identifiers, so this needs to be addressed.
 
 In addition, it is an intended and supported use case to sometimes embed limited structured data into an identifier itself, including some data that is not intrinsically sequential.
 
-While both situations present a challenge to Nomo's spartan design, they are fully addressed. 
+While both situations present a challenge to Nomo's spartan design, they are fully addressed.
 
 #### 4.2.1 Compound glyphs
 
@@ -281,9 +281,9 @@ If the above Unicode code points are to be treated as glyphs in a Nomo string, t
 
 The additional cultural context which causes these sequences to be regarded as or visually appear to be equivalent when mapped with Unicode and rendered in a digital font *cannot* be considered in the context of a valid Nomo string.
 
-Nomo resolves this by distinguishing between abstract identifier values themselves and their encoded representations. For the usual case where the encoding of an identifier is itself a one-dimensional sequence of glyphs, [Nomo: Schema Primitives](./nomo-schema-primitives.md) provides a formal description of how encoding, decoding, and validation algorithms can be combined to specify a **schema**. The algorithms in a schema can be used to resolve ambiguities in encoded identifier strings so that the evaluated strings of the identifier itself are truly context free and can always be considered a sequence of glyphs (or mapped integers) with no  
+Nomo resolves this by distinguishing between abstract identifier values themselves and their encoded representations. For the usual case where the encoding of an identifier is itself a one-dimensional sequence of glyphs, [Nomo: Schema Primitives](./nomo-schema-primitives.md) provides a formal description of how encoding, decoding, and validation algorithms can be combined to specify a **schema**. The algorithms in a schema can be used to resolve ambiguities in encoded identifier strings so that the evaluated strings of the identifier itself are truly context free and can always be considered a sequence of glyphs (or mapped integers) with no exceptions or qualifications.
 
-For the specific and intended case of digitized identifiers based on human writing systems, [Nomo: Common Schema](./nomo-common-schema.md) provides a fully specified instance of a schema that relies heavily on the work already done over decades and codified in the Unicode standard. In particular, the schema relies on normalization forms and on the existing work done to address confusable code points and sequences, where they present they same challenges of ambiguity to other systems that compose identifiers from Unicode code points.
+For the specific and intended case of digitized identifiers based on human writing systems, [Nomo: Common Schema](./nomo-common-schema.md) provides a fully specified instance of a schema that relies heavily on the Unicode standard. In particular, the schema relies on normalization forms and on the existing work done to address confusable code points and sequences.
 
 #### 4.2.2 Associative attributes
 
@@ -291,9 +291,9 @@ A common use case the authors anticipate is to construct an identifier that embe
 
 Imagine a situation where the only way--or the semantically preferable way--to uniquely identify a particular record is to note the values of each of four fields `domain`, `set`, `key`, and `version`. In this case we have four key-value pairs, which have no intrinsic ordering relative to each other. This yields `4!` = 24 possible orderings of the key-value pairs in an identifier which contains them, an apparent ambiguity when considering the strictly sequential, context-free evaluation of Nomo identifiers.
 
-This is resolved by the fact that Nomo natively describes an associative array (map) structure which may be included in the value of some identifiers, and again distinguishes between the values of an identifier itself and the one or many ways in which an identifier may be serialized.
+This is resolved by the fact that Nomo natively describes an [associative array (map) structure](./nomo-id-primitives.md#7-map) which may be included in the value of some identifiers, and again distinguishes between the values of an identifier itself and the one or many ways in which an identifier may be serialized.
 
-In this example would could use the common schema to *write down* one of these row identifiers in any number of ways that would all be valid:
+In this example we could use the common schema to *write down* one of these row identifiers in any number of ways that would all be valid:
 
 ```
 big-db:row[domain=mz,key=xy86,set=bc-34,version=23]

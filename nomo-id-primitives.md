@@ -1,6 +1,6 @@
 # Nomo: Identifier Primitives
  
-version `0.17.0` • 2023-07-06
+version `0.17.0` • 2023-07-10
 
 ## 1. Introduction
 
@@ -69,7 +69,7 @@ Each independent specification document of Nomo is versioned strictly according 
 The atoms of any Nomo identifier are the glyphs from which it is assembled. The following definitions imply a means to determine whether any given glyph corresponds to a glyph type within a particular set. Such an implementation is not defined in this specification, rather it is an assumed precondition.
 
 #### 2.1.1 Glyph type
-A **glyph type** is a single symbolic pattern which can be consistently represented and recognized. 
+A **glyph type** is a single discrete pattern which can be consistently represented and recognized. 
 
 #### 2.1.2 Glyph set
 A **glyph set** is a set of one or more distinct glyph types. 
@@ -87,11 +87,11 @@ Character encodings used in contemporary computing provide mappings between inte
 
 ### 2.3 Alternative mediums
 
-The term glyph implies a two-dimensional pattern in the manner of a character in a human natural writing system, but any pattern in any medium that can be consistently reproduced and recognized can be used as a glyph type. As glyphs are the atoms of which all Nomo identifiers are built, Nomo identifiers of any complexity can likewise be constructed or evaluated in any medium which can be used to express and recognize glyphs.
+The term glyph implies a two-dimensional pattern in the manner of a character in a human natural writing system, but any discrete pattern in any medium that can be consistently reproduced and recognized can be used as a glyph type. As glyphs are the atoms of which all Nomo identifiers are built, Nomo identifiers of any complexity can likewise be constructed or evaluated in any medium which can be used to express and recognize glyphs.
 
 ### 2.4 Collation and comparison
 
-Many natural writing systems have cultural rules about the ordering of written characters, or about equivalence between different representations of the "same" character. Nomo recognizes no such rules. Each glyph type is strictly distinct from every other glyph type in a glyph set. The only meaningful evaluation between two glyphs types or glyphs is whether they are the same or different.
+Many natural writing systems have cultural rules about the ordering (collation) of written characters, or about equivalence between different representations of the "same" character. Nomo recognizes no such rules. Each glyph type is strictly distinct from every other glyph type in a glyph set. The only meaningful evaluation between two glyphs types or glyphs is whether they are the same or different.
 
 ### 2.5 Compatibility and equivalence
 
@@ -204,15 +204,15 @@ A **tuple** is a sequence of zero or more values. The values of a tuple may them
 
 ### 6.2 Properties
 
-Tuples have the property of length (the count of elements), but this property has no significance within Nomo.
+Tuples have the property of count (the number of elements), but this property has no significance within Nomo.
 
 ### 6.3 Comparison
 
 Two tuples are the same if and only if:
 
  - The glyph sets of the two tuples are the same or are compatible 
- - The two tuples have the same number of elements
- - For all *n* from 1 to the count of elements, the value of element *n* in one tuple is the same as the value of element *n* is the other tuple, according to the rules described in this specification.
+ - The two tuples have the same count of elements
+ - For all *n* from 1 to the count of elements, the value of element *n* in one tuple is the same as the value of element *n* in the other tuple, according to the rules described in this specification.
 
 ### 6.4 Equivalence to Name concept
 
@@ -234,19 +234,19 @@ The keys within a map must be unique. Uniqueness is strictly defined according t
  
 ### 7.2 Properties
 
-Tuples have the property of size (the count of key-value pairs), but this property has no significance within Nomo.
+Maps have the property of count (the number of key-value pairs), but this property has no significance within Nomo.
 
 ### 7.3 Comparison
 
 Two maps are the same if and only if:
 
  - The glyph sets of the two maps are the same or are compatible 
- - The two maps have the same number of key-value pairs
+ - The two maps have the same count of key-value pairs
  - For each key *k* in one map, the same key exists in the other map, and the value associated with *k* in the first map is the same as the value associated with *k* in the other map, according to the rules described in this specification.
 
 ### 7.4 Subset relations
 
-According to the definitions above, any given pairs of maps can also be evaluated to determine if there is a strict subset / superset relation between the two maps. Although well-defined, such relations have no particular meaning or significance within Nomo. 
+According to the definitions above, any given pair of maps can also be evaluated to determine if there is a strict subset or superset relation between the two maps. Although well-defined, such relations have no particular meaning or significance within Nomo. 
 
 ## 8. Null
 
@@ -303,7 +303,14 @@ A common intended usage is to use the element name to denote a resource collecti
 
 As section [5.4 Empty Values](#54-empty-values) describes, the null value is not the same as the empty value of string, tuple, or map. It follows that the empty value of a given part of a QRN is not the same as a missing value for the same part: a QRN may include an authority whose value is the empty string of the glyph set used by the QRN, and this is different from a QRN which uses the same glyph set but has no authority part.
 
-An explicit null value for a set key or element key is defined to have the same meaning as a missing key part.
+An explicit null value for a set key or element key is defined to have the same meaning as a missing key part. In addition, while neither string or name values may themselves be null, a QRN may have a *missing* authority, set name, group name, or element name. It is conceptually equivalent to say that any of these parts is "null". 
+
+To reiterate, all of the following statements are valid and equivalent:
+
+- "This QRN does not have an authority part"
+- "The authority part of this QRN is missing"
+- "The authority part of this QRN is null"
+- "The authority part of this QRN is undefined"
 
 ### 9.6 Equality
 
@@ -318,9 +325,9 @@ Two QRNs are the same if and only if:
 
 As noted in the sections above, Nomo does not define any relationship or comparison between values of any type except for sameness.
 
-As an illustration, consider an internet domain name such as `mail.example.com` as represented by a Nomo name with the ordered segments [`mail`, `example`, `com`]. The internet domain name system as centrally coordinated by IANA explicitly does define subset semantics such that `mail.example.com` is definitely a "subdomain" of `example.com`, which is itself a member of the "top level domain" `com`.
+As an illustration, consider an internet domain name such as `mail.example.com` as represented by a Nomo name with the ordered segments (`mail`, `example`, `com`). The internet domain name system as centrally coordinated by IANA explicitly does define subset semantics such that `mail.example.com` is definitely a "subdomain" of `example.com`, which is itself a member of the "top level domain" `com`.
 
-But Nomo itself defines no relationship between the names [`mail`, `example`, `com`], [`example`, `com`], and [`com`]. It only concludes that they are different names.
+But Nomo itself defines no relationship between the names (`mail`, `example`, `com`), (`example`, `com`), and (`com`). It only concludes that they are different names.
 
 ### 10.2 QRN relations
 
@@ -359,31 +366,29 @@ The above implies the following corollaries regarding these operators:
 
 #### 10.2.3 Subset relations
 
-Readers familiar with set theory may note that additional set relationships could be expressed, and that it may seem to make more sense if, for example, one QRN contains a group name but no element identifier. In this case would it not make more sense to say the following, for example?:
+Readers familiar with set theory may note that the `∈` operator generally means "is an **element** of". This is distinct from the `⊂`, which means "is a **subset** of". By definition a subset is itself a set, while an element is not a set. 
 
-```
-ecma/es[11]::types ⊂ ecma/es[11]
-```
+The parts of a QRN by definition also express subset relations. A set name relative to some authority implies a subset of all possible identifiers relative to that same authority. The group name part by definition denotes a subset. 
 
-And **not**
+Given this, it could be argued that `⊂` is a more appropriate operator than `∈` unless one of the operands has a defined element name. 
 
-```
-ecma/es[11]::types ∈ ecma/es[11]
-```
+Nomo intentionally chooses the `∈` / `∋` operators only for two reasons. First is practical simplicity, restricting the complexity of relation concepts defined for Nomo. Second is the conceptual distinction between an identifier itself (a Nomo structure) and whatever thing that identifier *denotes*. In other words, there is a difference between the structure of an identifier, which Nomo is very much concerned with, and the *meaning* of an identifier, which Nomo has no opinion about.
 
-Which is to say, according the the semantics defined for QRNs, isn't the first identifier above (`ecma/es[11]::types`) a **subset** rather than **element of** of the second identifier (`ecma/es[11]`)?
+Restricting this focus to identifier structure, Nomo defines the following general principal: 
 
-The answer is that Nomo is strictly concerned with relationships between identifiers, not between things or concepts which those identifiers may denote. Further, Nomo limits itself to defining binary relations -- relations between exactly one identifier and exactly one other identifier. In this context, `ecma/es[11]::types` *denotes* a subset of the ideas or things *denoted* by `ecma/es[11]`, but the identifier itself is a single element, a single defined entity. 
+*For any QRN that does not contain an element key, there is exists a set of **more qualified** QRNs.*
 
-According to the relations further described below, the identifier `ecma/es[11]::types` is in the domain of possible identifiers relative to `ecma/es[11]`, therefore `ecma/es[11]::types` is **in** `ecma/es[11]`, and by complement `ecma/es[11]` **contains** `ecma/es[11]::types`. We use the symbols `∈` and `∋` to describe this. Whether this constitutes the "same" usage of these symbols as in set theory in general, is merely an analogy, or is in fact a misuse of the symbols is a philosophical question we leave to readers to debate.
+Every QRN in this more-qualified set is an element of that set of identifiers. The QRN `ecma/es[11]::types:` may be defined to *denote* a subset, but the identifier structure itself a single element (a distinct identifier) that is in the set of more qualified identifiers relative to `ecma/es[11]::`.
 
-The descriptions below do use the union `∪` and intersection `∩` symbols to illustrate relationships. The intended result is still to define the outcome of applying the **in** (`∈`) or **contains** (`∋`) operator to two identifiers.
+In the discussion of relationships below the word "domain" is used as a synonym for "the set of more-qualified identifiers". Likewise "relative to" is used as a synonym for "**in** the set of more-qualified identifiers".
 
 #### 10.2.4 Notation
 
 For convenience, the following descriptions represent QRNs using [common schema](#6-common-schema) notation. The relationships hold regardless of the medium or glyph sets used for two identifiers.
 
-The asterisk is used to stand for *any or all identifiers* with at least one defined part in the position indicated by the asterisk. This symbolic meaning is not part of the common schema, and is only used here to illustrate the relationships described.
+The asterisk (`*`) is used to stand for *any or all identifiers* with at least one defined part in the position indicated by the asterisk. This symbolic meaning is not part of the common schema, and is only used here to illustrate the relationships described.
+ 
+The descriptions below do use several other set relation symbols including union `∪`, intersection `∩`, strict equality `≡`, and disjoint `∅`. These are used to define the outcome of applying the **in** (`∈`) or **contains** (`∋`) operator to two identifiers. They do not imply additional formally defined comparison operations between QRNs operands.
 
 ### 10.3 Authority relations
 
@@ -401,14 +406,14 @@ By definition, no possible identifier relative to authority `A` is in the set of
 |Relation|||||Description|
 |-|:-:|:-|:-:|:-|-|
 |`x::*`|`∩`|`y::*`|`=`|`∅`|The domains of two set names are disjoint|
-|`x::*`|`∈`|`x::`|||All subsets and elements relative to a set name without a key are in the set denoted by that unkeyed set name|
+|`x::*`|`∈`|`x::`|||All subsets and elements relative to a set name without a key are in the domain of that unkeyed set name|
   
 #### 10.4.2 Keyed sets
 
 |Relation|||||Description|
 |-|:-:|:-|:-:|:-|-|
 |`x[1]::*`|`∩`|`x[2]::*`|`=`|`∅`|The sets denoted by two different key values relative to the same set name are disjoint|
-|`x[1]::*`|`∈`|`x[1]::`|||All subsets and elements relative to a set name with a key are in the set denoted by that keyed set name|
+|`x[1]::*`|`∈`|`x[1]::`|||All subsets and elements relative to a set name with a key are in the domain of that keyed set name|
  
 #### 10.4.3 Relation between keyed and unkeyed sets
 
@@ -416,9 +421,9 @@ The relation between a QRN with a keyed set name and a QRN with an unkeyed set n
 
 |Relation|||||Description|
 |-|:-:|:-|:-:|:-|-|
-|`x[*]::*`|`∈`|`x::`|||All set keys relative to the same set name are in the same set of sets denoted by the set name without a key|
+|`x[*]::*`|`∈`|`x::`|||All set keys relative to the same set name are in the domain of the set name without a key|
 |`x::*`|`∩`|`x[*]::`|`=`|`∅`|The subsets and elements relative to a set name without a key are disjoint the the set of keyed sets relative to that same set name|
-|`x::*`|`∪`|`x[*]::`|`≡`|`x::`|The union of the subsets and elements relative to a set name without a key with the set of keyed sets relative to that same set name exactly equals the entire set of possible identifiers relative to the unkeyed set name.<br><br>In other words, the subsets and elements relative to an unkeyed set name along with the set of keyed sets relative to that set name form a partition over the possible identifiers relative to the unkeyed set name.|
+|`x::*`|`∪`|`x[*]::`|`≡`|`x::`|The union of the subsets and elements relative to a set name without a key with the set of keyed sets relative to that same set name exactly equals the entire set of possible identifiers relative to the unkeyed set name.<br><br>In other words, the subsets and elements relative to an unkeyed set name along with the set of keyed sets relative to that set name form a partition over the identifier domain of the unkeyed set name.|
 
 ### 10.5 Group relations
 
@@ -433,25 +438,25 @@ The relation between a QRN with a keyed set name and a QRN with an unkeyed set n
 |-|:-:|:-|:-:|:-|-|
 |`e`|`∩`|`f`|`=`|`∅`|The domains of two element names are disjoint| 
 |`e[1]`|`∩`|`e[2]`|`=`|`∅`|The domains of two element key values relative to the same element name are disjoint |
-|`e[*]`|`∈`|`e`|||All element keys relative to the same element name are in the same set of elements denoted by the element name without a key|
+|`e[*]`|`∈`|`e`|||All element keys relative to the same element name are in the domain of the element name without a key|
 
 ### 10.7 User-defined QRN Semantics
 
 Nomo itself defines no semantics or relations between identifiers other than those described above. This does not prevent parties from agreeing on their own semantics for relations between identifiers that the underlying standard simply recognizes as not the same. 
 
-A common use case here, for elements within keyed and unkeyed set names, is to express the identity of a concept in general in association or contrast with the identity of that "same" concept within one or more specific "versions" of a concept collection.
+A common use case here for elements within keyed and unkeyed set names is to express the identity of a concept in general in association or contrast with the identity of that "same" concept within one or more specific "versions" of a concept collection.
 
 Example:
 
 |||
 |-|-|
-|`ecma/es::types:object`|The `Object` type in general across all versions of ECMAScript (JavaScript)|
-|`ecma/es[1]::types:object`|The `Object` type with features and APIs specifically as defined in the first edition (1997) spec|
-|`ecma/es[11]::types:object`|The `Object` type with features and APIs specifically as defined in the eleventh edition (2020) spec|
+|`ecma/es::api:Object`|The `Object` class in general across all versions of ECMAScript (JavaScript)|
+|`ecma/es[1]::api:Object`|The `Object` class with features and APIs specifically as defined in the first edition (1997) spec|
+|`ecma/es[11]::api:Object`|The `Object` class with features and APIs specifically as defined in the eleventh edition (2020) spec|
 
 Nomo itself defines only that
 - all three QRNs above are different from each other
 - all three QRNs above are in the domain of possible identifiers relative to the unkeyed set `ecma/es::`
-- the group and element parts of all three QRNs (`types:object`) are identical
+- the group and element parts of all three QRNs (`api:Object`) are the same
 
-Humans are free outside of Nomo to recognize or even formally define a semantic equivalence or relatedness between the three identifiers as all relating to the concept of the `Object` type within JavaScript / ECMAScript.
+Humans are free outside of Nomo to recognize or even formally define a semantic equivalence or relatedness between the three identifiers as all relating to the concept of the `Object` type within JavaScript / ECMAScript. These semantics are just not part of Nomo itself.
