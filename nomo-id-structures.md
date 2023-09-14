@@ -84,7 +84,7 @@ Finally, for situations where more than one identifier are being compared -- inc
  
 ### 1.4 Terms
 
-- "This document" refers to this specific document: "Nomo: Identifier Primitives", as distinct from the additional documents or other media which constitute the Nomo standard as a whole.
+- "This document" refers to this specific document: "Nomo: Identifier Structures", as distinct from the additional documents or other media which constitute the Nomo standard as a whole.
 - "This specification" refers to the normative sections of this document.
 
 #### 1.4.1 Comparison terms
@@ -418,22 +418,39 @@ Note that in many implementations the authority string of a QRN may essentially 
 
 A Nomo **qualified resource name** (QRN) is a composition of other Nomo structures whose parts are chosen to correspond directly to concepts in authentication and set theory. A QRN represents a fully qualified identifier, and is the ultimate purpose of this specification.
  
-A QRN is composed of the following parts, all of which are optional. All parts in a QRN must use the same glyph set:
+A QRN is composed of one optional *annotation* (schema) and six optional *parts*. All elements in a QRN must use the same glyph set:
 
 |Part|Type|Description|
 |-|-|-|
+|**schema**|**value**|An arbitrary value identifying a deterministic algorithm for validating the QRN|
 |**authority**|**string**|An arbitrary string identifying the universe of a set. In general, the principal which declares the identifier|
 |**set name**|**name**|The identifier of a **set** itself|
 |**set key**|**value**|A further qualifier on the identity of a **set** itself|
 |**group name**|**name**|The identifier of a proper **subset** within a set|
 |**element name**|**name**|The identifier for a specific **element** within a set|
 |**element key**|**value**|A further qualifier on the identity of an **element** within a set|
+ 
+### 10.1 Schema
 
-### 10.1 Authority
+If present, the schema annotation denotes an algorithm which can be applied to the QRN to determine if it is valid according to some arbitrary but deterministic rule set. This specification provides no further details about the actual existence or implementation of any such algorithm, but [Nomo: Schemas](./nomo-schemas.md) describes such algorithms in detail.
+
+Consistent with the rest of this specification, a schema cannot alter the *meaning* of the content of the QRN, it simply denotes the existence of an additional unary boolean operator `valid`. The result of applying that operator has no effect on the [comparison operators](#11-relations) (`same`, `in`, `contains`).
+
+As such, the content of the schema value is not part of the QRN content itself, and so is excluded in all discussions of relations and comparison.
+
+#### 10.1.1 Bound Identifier
+
+When a QRN does include a schema annotation, the QRN is said to be **bound**. 
+
+#### 10.1.2 Structure
+
+The schema annotation is a generic [value](#5-value). It can therefore contain a reference value, and that reference may be expanded to any concrete type, including a full QRN. In fact, it is the general intent that schema annotations contain references which map to full QRNs which in turn unambiguously identify some well-defined schema.
+
+### 10.2 Authority
 
 The authority is the root disambiguating context of a qualified resource name. Nomo itself intentionally does not provide any opinion or mechanism for allocating authority strings. Assignment, agreement, or proof of ownership of some particular authority string is an authentication concept outside the scope of Nomo.
 
-### 10.2 Set
+### 10.3 Set
 
 The set name and key represent the identifier of a set itself. The QRN concept itself as defined in this specification does not require that a set name be present if a set key is present. The set name and key are collectively called the set identifier.
 
@@ -441,11 +458,11 @@ When both a set name and a set key are present, this specification defines this 
 
 A common intended usage is to use the set name to denote a software, data, or administrative concept domain, and the key to denote a specific version of that domain.
 
-### 10.3 Group
+### 10.4 Group
 
 The group name represents the identifier of a proper subset within the set identified by the set identifier. A QRN containing only a group name expresses the concept of an identified subset independent of any particular set to which it may belong.
 
-### 10.4 Element
+### 10.5 Element
 
 The element name and element key represent the identifier of a specific element within the set identified by the set identifier or the subset identified by the group name. The QRN concept itself as defined in this specification does not require that an element name be present if an element key is present. The element name and element key are collectively called the element identifier.
 
@@ -455,7 +472,7 @@ A QRN containing only an element name or key represents the concept of an identi
 
 A common intended usage is to use the element name to denote a resource collection and element key to identify a specific resource within that collection: colloquially, to identify a table with the element name and a row within that table with the element key.
 
-### 10.5 Empty and Missing Parts
+### 10.6 Empty and Missing Parts
 
 As section [5.4 Empty Values](#54-empty-values) describes, the null value is not the same as the empty value of string, tuple, or map. It follows that the empty value of a given part of a QRN is not the same as a missing value for the same part: a QRN may include an authority whose value is the empty string of the glyph set used by the QRN, and this is different from a QRN which uses the same glyph set but has no authority part.
 
@@ -468,16 +485,20 @@ To reiterate, all of the following statements are valid and equivalent:
 - "The authority part of this QRN is null"
 - "The authority part of this QRN is undefined"
 
-### 10.6 Comparison
+### 10.7 Comparison
 
 Two QRNs are the same if and only if:
 
 - The glyph sets of the two QRNs are the same or are compatible
-- All references contained in either QRN can be fully expanded
+- All references contained in any of the six parts of either QRN can be fully expanded
 - For each of the six parts of a QRN, the part is undefined in both QRNs, OR the part is defined in both QRNs and the corresponding fully expanded values are the same according to the rules defined in this specification
 
-As with tuples and maps, it follows that any QRN that contains a referentially invalid reference is not the same as any other QRN, even another QRN with an invalid reference at the same location with the same literal string value.
+Note that the schema *annotation* is irrelevant to comparison, both here for the `same` operator and below for the `in` / `contains` operators. Specifically, QRNs remain comparable (`same`, `in`, or `contains` *may* return true) even if the `valid` operator denoted by the QRN's schema annotation evaluates the QRN to be invalid. 
 
+As with tuples and maps, it follows that any QRN that contains a referentially invalid reference is not the same as any other QRN, even another QRN with an invalid reference at the same location with the same literal string value. However, this restriction does not apply to an invalid reference in a schema annotation. 
+
+To reiterate, the schema annotation of a QRN has no effect at all on any of the comparison operators, even if the schema annotation contains an invalid reference, or the schema does identify a known validation algorithm and that algorithm evaluates to false on the applicable QRN.
+ 
 ## 11. Relations
 
 ### 11.1 Value relations
@@ -523,7 +544,7 @@ The above implies the following corollaries regarding these operators:
 |`A ∈ B ⇒ !(A = B)`|If A is **in** B, then A is **not the same** as B|
 |`A ∈ B ⇒ !(A ∋ B)`|If A is **in** B, then A is **does not contain** B|
 |`A ∋ B ⇒ !(A = B)`|If A **contains** B, then A is **not the same** as B|
-|`A ∋ B ⇒ !(A ∈ B)`|If A **contains** B, then A is **is not in** B|
+|`A ∋ B ⇒ !(A ∈ B)`|If A **contains** B, then A is **not in** B|
 
 #### 11.2.3 Subset relations
 
@@ -549,7 +570,7 @@ For convenience, the following descriptions represent QRNs using [common schema]
 
 The asterisk (`*`) is used to stand for *any or all identifiers* with at least one defined part in the position indicated by the asterisk. This symbolic meaning is not part of the common schema, and is only used here to illustrate the relationships described.
  
-The descriptions below do use several other set relation symbols including union `∪`, intersection `∩`, strict equality `≡`, and disjoint `∅`. These are used to define the outcome of applying the **in** (`∈`) or **contains** (`∋`) operator to two identifiers. They do not imply additional formally defined comparison operations between QRNs operands.
+The descriptions below do use several other set relation symbols including union `∪`, intersection `∩`, strict equality `≡`, and disjoint `∅`. These are used to define the outcome of applying the **in** (`∈`) or **contains** (`∋`) operator to two identifiers. They do not imply additional formally defined comparison operations between QRNs.
 
 ### 11.3 Authority relations
 
@@ -594,9 +615,9 @@ An anonymous set key is a QRN with a set key but no set name. While many schemas
 
 However, Nomo defines the domains of any anonymous set to be non-comparable for the in/contains operator. The same operator is still defined and may return true when all parts of a QRN containing an anonymous set key are the same, per the rules described in this specification.
 
-|Relation|||||Description|
-|-|:-:|:-|:-:|:-|-|
-|`[1]::*`|`∉`|`[1]::`|||A QRN with an anonymous set key and additional parts defined is not in the domain of any other QRN, even a QRN with the same anonymous set key|
+|Relation|||Description|
+|-|:-:|:-|-|
+|`[1]::*`|`∉`|`[1]::`|A QRN with an anonymous set key and additional parts defined is not in the domain of any other QRN, even a QRN with the same anonymous set key|
 
 ### 11.5 Group relations
 

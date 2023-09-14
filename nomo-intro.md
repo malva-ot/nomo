@@ -8,14 +8,14 @@ Nomo is a standard for constructing identifiers that are unique, semantic, and m
  
 ### 1.1 Contents
  
-The immediate practical product of Nomo is a suggested [Unicode](https://www.unicode.org/standard/standard.html)-based [common schema](./nomo-common-schema.md) for validating, serializing, and parsing [qualified resource names](./nomo-id-structures.md.md#10-qualified-resource-name) and their component [primitives](./nomo-id-structures.md#11-identifier-primitives). See [Examples](#appendix-1-examples) at the end of this document for an intuitive introduction by example. 
+The immediate practical product of Nomo is a suggested [Unicode](https://www.unicode.org/standard/standard.html)-based [common schema](./nomo-common-schema.md) for validating, serializing, and parsing [qualified resource names](./nomo-id-structures.md.md#10-qualified-resource-name) and their component [structures](./nomo-id-structures.md#5-value). See [Examples](#appendix-1-examples) at the end of this document for an intuitive introduction by example. 
 
 The common schema is built on lower levels of specification which are described first. It is expected and intended that the common schema may change over time, while the underlying primitives which the schema encodes will remain stable indefinitely.
 
 Nomo includes three modules of specification:
 
 - [**Identifier Structures**](./nomo-id-structures.md) - Abstract concepts that provide a mathematically complete description of an identifier
-- [**Schema primitives**](./nomo-schema-primitives.md) - Abstract concepts that describe how identifiers may be validated and mapped to or from strings
+- [**Schemas**](./nomo-schemas.md) - Abstract concepts that describe how identifiers may be validated and mapped to or from strings
 - [**Common schema**](./nomo-common-schema.md) - An instance of a schema intended for immediate general use in distributed computing and recordkeeping
 
 ### 1.2 Terms
@@ -82,7 +82,7 @@ These two points of negotiation are the choice of [glyph set](./nomo-id-structur
 
 Two Nomo identifiers declared by two different parties are mutually intelligible if and only if those two parties agree on the equivalence of or a mapping between the [glyph sets](./nomo-id-structures.md#212-glyph-set) associated with the respective identifiers. 
 
-Neither the [identifier structures](./nomo-id-structures.md) nor [schema primitives](./nomo-schema-primitives.md) sections of the Nomo standard provide any predefined glyph set, nor do they define any algorithm for establishing equivalence among potential glyph sets.
+Neither the [identifier structures](./nomo-id-structures.md) nor [schemas](./nomo-schemas.md) specifications provide any predefined glyph set, nor do they define any algorithm for establishing equivalence among potential glyph sets.
 
 The [common schema](./nomo-common-schema.md) does specify a related pair of glyph sets: the widely used [Unicode standard](https://www.unicode.org/main.html). Unicode defines a set of positive integers, a set of two-dimensional shapes (characters), and a mapping between the two sets. For further detail, including rules for handling ambiguous mappings between characters and underlying code point integers, see [common schema](./nomo-common-schema.md).
 
@@ -284,7 +284,7 @@ If the above Unicode code points are to be treated as glyphs in a Nomo string, t
 
 The additional cultural context which causes these sequences to be regarded as or visually appear to be equivalent when mapped with Unicode and rendered in a digital font *cannot* be considered in the context of a valid Nomo string.
 
-Nomo resolves this by distinguishing between abstract identifier values themselves and their encoded representations. For the usual case where the encoding of an identifier is itself a one-dimensional sequence of glyphs, [Nomo: Schema Primitives](./nomo-schema-primitives.md) provides a formal description of how encoding, decoding, and validation algorithms can be combined to specify a **schema**. The algorithms in a schema can be used to resolve ambiguities in encoded identifier strings so that the evaluated strings of the identifier itself are truly context free and can always be considered a sequence of glyphs (or mapped integers) with no exceptions or qualifications.
+Nomo resolves this by distinguishing between abstract identifier values themselves and their encoded representations. For the usual case where the encoding of an identifier is itself a one-dimensional sequence of glyphs, [Nomo: Schemas](./nomo-schemas.md) provides a formal description of how encoding, decoding, and validation algorithms can be combined to specify a **schema**. The algorithms in a schema can be used to resolve ambiguities in encoded identifier strings so that the evaluated strings of the identifier itself are truly context free and can always be considered a sequence of glyphs (or mapped integers) with no exceptions or qualifications.
 
 For the specific and intended case of digitized identifiers based on human writing systems, [Nomo: Common Schema](./nomo-common-schema.md) provides a fully specified instance of a schema that relies heavily on the Unicode standard. In particular, the schema relies on normalization forms and on the existing work done to address confusable code points and sequences.
 
