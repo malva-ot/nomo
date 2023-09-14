@@ -1,22 +1,22 @@
 # Nomo: Introduction
  
-version `0.17.0` • 2023-07-08
+version `0.18.0` • 2023-09-14
 
 ## 1. Introduction
 
-Nomo is a standard for constructing identifiers that are unique, semantic, and mechanically easy to process. Nomo describes identifiers that are not bound to any institutional or mechanical infrastructure, nor to any central authority. Its purpose is to facilitate systematic cooperation and distributed record-keeping by providing a stable framework for producing and consuming identifiers that are mutually intelligible and stable across many cultures and contexts, over arbitrarily short or long time spans.
+Nomo is a standard for constructing identifiers that are unique, semantic, and mechanically easy to process. Nomo describes identifiers that are not bound to any institutional or mechanical infrastructure, nor to any central authority. Its purpose is to facilitate systematic cooperation and distributed recordkeeping by providing a stable framework for producing and consuming identifiers that are mutually intelligible and stable across many cultures and contexts, over arbitrarily short or long time spans.
  
 ### 1.1 Contents
  
-The immediate practical product of Nomo is a suggested [common schema](./nomo-common-schema.md) for validating, serializing, and parsing [qualified resource names](./nomo-id-primitives.md#9-qualified-resource-name) and their component [primitives](./nomo-id-primitives.md#11-identifier-primitives). See [Examples](#appendix-1-examples) at the end of this document for an immediate and intuitive introduction by example. 
+The immediate practical product of Nomo is a suggested [Unicode](https://www.unicode.org/standard/standard.html)-based [common schema](./nomo-common-schema.md) for validating, serializing, and parsing [qualified resource names](./nomo-id-structures.md.md#10-qualified-resource-name) and their component [primitives](./nomo-id-structures.md#11-identifier-primitives). See [Examples](#appendix-1-examples) at the end of this document for an intuitive introduction by example. 
 
 The common schema is built on lower levels of specification which are described first. It is expected and intended that the common schema may change over time, while the underlying primitives which the schema encodes will remain stable indefinitely.
 
 Nomo includes three modules of specification:
 
-- [**Identifier Primitives**](./nomo-id-primitives.md) - Abstract concepts that provide a mathematically complete description of an identifier
-- [**Schema primitives**](./nomo-schema-primitives.md) - Abstract concepts that describe how identifier primitives may be validated and mapped to or from strings
-- [**Common schema**](./nomo-common-schema.md) - An instance of a schema intended for immediate general use in distributed computing and record-keeping
+- [**Identifier Structures**](./nomo-id-structures.md) - Abstract concepts that provide a mathematically complete description of an identifier
+- [**Schema primitives**](./nomo-schema-primitives.md) - Abstract concepts that describe how identifiers may be validated and mapped to or from strings
+- [**Common schema**](./nomo-common-schema.md) - An instance of a schema intended for immediate general use in distributed computing and recordkeeping
 
 ### 1.2 Terms
  
@@ -34,7 +34,7 @@ This document is not a normative specification, but does have a version. See [Ap
 
 ### 1.4 Status
 
-This document is a draft. Language may be contradictory or vague, though by accident and not intent. Comments, corrections, and contributions are welcome.
+This document is a draft. Language may be contradictory or vague, though by accident and not intent. Comments, corrections, and other contributions are welcome.
 
 ## 2. License
 Unless explicitly identified otherwise in the contents of a file, the content in this repository is licensed under the [Creative Commons Attribution-ShareAlike 4.0 International](https://creativecommons.org/licenses/by-sa/4.0/legalcode) license. As summarized in the [Commons Deed](https://creativecommons.org/licenses/by-sa/4.0/) and strictly defined in the [license](./LICENSE.md) itself: you may share or adapt this work, provided you give appropriate credit, provide a link to the license, and indicate if changes were made. In addition, you must preserve the original license. For the details and actual legal license, consult the [license](./LICENSE.md).
@@ -58,7 +58,7 @@ Uniqueness is an intrinsic goal of any identifier. Nomo is designed to make it e
 
 #### 3.1.2 Semantic clarity
 
-"Semantic" means the content of the identifier has symbolic meaning to humans. Semantic clarity helps humans to compose, remember, and understand identifiers. 
+"Semantic" means the content of the identifier has symbolic meaning to humans. Semantic clarity helps humans to compose, remember, and understand identifiers.
 
 The demand for semantic clarity precludes many contemporary unique identifier conventions such as [UUID / GUID](https://datatracker.ietf.org/doc/html/rfc4122), [Mongo ObjectId](https://www.mongodb.com/docs/manual/reference/method/ObjectId/), [XID](https://github.com/rs/xid), or similar constructions that are essentially serializations of a large random integer, with or without a time-based prefix.
 
@@ -72,19 +72,19 @@ The demand for mechanical clarity precludes simply using unstructured natural la
 
 Nomo is designed to facilitate cooperation without the need for a central authority that arbitrates, authorizes, or allocates identifiers or identifier spaces.
 
-To achieve mutual intelligibility, Nomo defines identifier primitives along with deterministic rules for comparing them. 
+To achieve mutual intelligibility, Nomo defines identifier structures along with deterministic rules for comparing them. 
 
 To achieve decentralization, Nomo provides two points where choice or implementation are left to cooperating parties to negotiate.
 
-These two points of negotiation are the choice of [glyph set](./nomo-id-primitives.md#212-glyph-set) for an identifier, and authentication of the [authority string](./nomo-id-primitives.md#91-authority) of a [qualified resource name](./nomo-id-primitives.md#9-qualified-resource-name). 
+These two points of negotiation are the choice of [glyph set](./nomo-id-structures.md#212-glyph-set) for an identifier, and authentication of the [authority string](./nomo-id-structures.md#101-authority) of a [qualified resource name](./nomo-id-structures.md#10-qualified-resource-name). 
 
 ##### 3.1.4.1 Negotiation - Glyph set
 
-Two Nomo identifiers declared by two different parties are mutually intelligible if and only if those two parties agree on the equivalence of or a mapping between the [glyph sets](#41-glyphs) associated with the respective identifiers. 
+Two Nomo identifiers declared by two different parties are mutually intelligible if and only if those two parties agree on the equivalence of or a mapping between the [glyph sets](./nomo-id-structures.md#212-glyph-set) associated with the respective identifiers. 
 
-Neither the [identifier primitives](./nomo-id-primitives.md) nor [schema primitives](./nomo-schema-primitives.md) sections of the Nomo standard provide any predefined glyph set, nor do they define any algorithm for establishing equivalence among potential glyph sets.
+Neither the [identifier structures](./nomo-id-structures.md) nor [schema primitives](./nomo-schema-primitives.md) sections of the Nomo standard provide any predefined glyph set, nor do they define any algorithm for establishing equivalence among potential glyph sets.
 
-The [common schema](./nomo-common-schema.md) does specify a related pair of glyph sets: the widely used [Unicode standard](https://www.unicode.org/main.html). Unicode defines a set of positive integers, a set of visual shapes (characters), and a mapping between the two sets. For further detail, including rules for handling ambiguous mappings between characters and underlying code point integers, see [common schema](./nomo-common-schema.md).
+The [common schema](./nomo-common-schema.md) does specify a related pair of glyph sets: the widely used [Unicode standard](https://www.unicode.org/main.html). Unicode defines a set of positive integers, a set of two-dimensional shapes (characters), and a mapping between the two sets. For further detail, including rules for handling ambiguous mappings between characters and underlying code point integers, see [common schema](./nomo-common-schema.md).
 
 ##### 3.1.4.2 Negotiation - Authority string
 
@@ -100,13 +100,13 @@ Even the [common schema](./nomo-common-schema.md) does not provide a mechanism f
 
 A second order goal of all the characteristics described above is that Nomo identifiers may be durable over time and context. While the authors intend to solve some immediate problems in distributed computing, they also aim to provide a means of establishing identifiers that can be communicated, understood, and continuously used across changing cultural and political boundaries, over indefinitely long time spans, and in addition to provide a rational scheme for assigning identifiers to natural and historical concepts and artifacts. Prime examples here include identification of persons, properties, documents, or industry and scientific standards.
 
-Designing for durability is a key reason that the common schema included here is defined separately from the underlying primitives. One of the most important but also arbitrary decisions in that schema is the choice of characters used as delimiters between the serialized parts of an identifier. The characters chosen (including `/`, `:`, `,`, `.`, `=`, `[`, `]`) are a function of specific cultural and industrial conditions at the time of writing. Most importantly, these characters are available on the vast majority of computer keyboards in use at the time. From that limited set of potential glyphs, these were chosen for visual distinction such that human brains intuitively perceive segmentation between parts, and for analogy to existing symbolic uses of the same glyphs in computing, mathematics, and general use.
+Designing for durability is a key reason that the common schema included here is defined separately from the underlying structures. One of the most important but also arbitrary decisions in that schema is the choice of characters used as delimiters between the serialized parts of an identifier. The characters chosen (including `/`, `:`, `,`, `.`, `=`, `[`, `]`) are a function of specific cultural and industrial conditions at the time of writing. Most importantly, these characters are available on the vast majority of computer keyboards in use at the time. From that limited set of potential glyphs, these were chosen for visual distinction such that human brains intuitively perceive segmentation between parts, and for analogy to existing symbolic uses of the same glyphs in computing, mathematics, and general use.
 
 And yet these choices are not ideal. Mechanically and visually, it would be much preferable to use some of the hundreds of symbolic glyphs already defined in the Unicode standard, which are visually distinct and not widely used in other contexts, and so unlikely to be used within identifier segments themselves, or for other confounding purposes in data serialization and transfer. But at this time, these other characters would be culturally unfamiliar to most contemporary users and difficult for them to type even if they became familiar with them. 
 
 And so we can hope that the current common schema may be superseded in the future by a more effective choice of delimiting characters, when the simple fact of keyboard layout or other input methods makes it easier for humans to express them.
 
-By defining the identifier primitives and comparison relations independent of any particular serialization method, the Nomo standard allows humans to make different serialization choices over time while maintaining backwards compatibility, or at least intelligibility, so that serializations under differing or obsolete schemas are still easy to process.
+By defining the identifier structures and comparison relations independent of any particular serialization method, the Nomo standard allows humans to make different serialization choices over time while maintaining backwards compatibility, or at least intelligibility, so that serializations under differing or obsolete schemas are still easy to process.
 
 #### 3.1.6 Platform independence
  
@@ -134,53 +134,54 @@ Nomo is also intentionally designed to be applicable to non-computing uses cases
 
 ## 4. Structural Principles
 
-[**Nomo: Identifier Primitives**](./nomo-id-primitives.md) provides the exact descriptions of the mechanical concepts from which identifiers are composed. But all of Nomo is based on several intentional constraining choices about the possible structure of identifiers. Readers may realize that all of these constraints are in fact violated both in human writing systems and in natural objects to which users may want to assign unambiguous identifiers. This tension is addressed below in section 4.2.
+[**Nomo: Identifier Structures**](./nomo-id-structures.md) provides the exact descriptions of the mechanical concepts from which identifiers are composed. But all of Nomo is based on several intentional constraining choices about the possible structure of identifiers. Readers may realize that all of these constraints are in fact violated both in human writing systems and in natural objects to which users may want to assign unambiguous identifiers. This tension is addressed below in section 4.2.
 
 ### 4.1 Constraints
 
 The goal of any semantic identifier is to express meaning (information) in some relatively compact way, so that the identifier itself bears some description of the thing denoted. Humans have invented myriad ways of expressing defacto identifiers (or names), most abundantly in natural language, but also in visual arts and designs in one, two, three, or four dimensions, and in sound waves produced with or without the aid of tools (instruments). 
 
-Any of these mediums can in fact be used to construct an identifier consistent with the Nomo standard, but from all the possible ways of expressing information Nomo constrains itself to a stack of three concept layers. All three layers are strictly **discrete**, while each layer provides a distinct type of **structure**.
+Any of these mediums can in fact be used to construct an identifier consistent with the Nomo standard, but from all the possible ways of expressing information Nomo constrains itself to a stack of four concept layers. All four layers are strictly **discrete**, while each layer provides a distinct type of **structure**.
 
 |Layer|Concepts|Structure|
 |-|-|-|
 |1|Glyphs|**atomic**|
 |2|Strings|**sequential** (sequence of glyphs)|
-|3|Identifiers|**associative** (structures of strings)|
+|3|Values|**associative** (structures of strings)|
+|4|Identifiers|**semantic** (labelling of values)|
 
-At the base are the atomic **glyphs** of an identifier. Glyphs are in turn combined in sequences to form **strings**. Finally, strings are arranged in a limited set of structures to form **identifiers**.
+At the base are the atomic **glyphs** of an identifier. Glyphs are in turn combined in sequences to form **strings**. Strings are arranged in a limited set of structures to form simple or compound **values**. Finally, two semantically defined **identifier** types ([names](./nomo-id-structures.md#4-name) and [QRNs](./nomo-id-structures.md#10-qualified-resource-name)) are composed of a collection of values.
 
 The structures defined at the identifier layer provide a way to express both semantic and mechanical content in addition to the human meanings expressed in the component strings of an identifier. 
 
 #### 4.1.1 Discrete
 
-The most basic feature of any identifier or part is that it can be unambiguously determined to be the same or different as some other identifier or part. 
+The most basic feature of any identifier or part is that it can be unambiguously determined to be the same or different as some other identifier or part.
 
-A both intuitive and formal definition of discreteness notes the bijection between a any set of discrete structures and the natural numbers. Put simply, any set of discrete things can be counted. This is true in the case of Nomo, but it should also be noted that any and all mappings are arbitrary with respect to numeric value. That is, any glyph, string, or identifier can be mapped to *any* integer that is not already mapped to another glyph, string, or identifier.
+A both intuitive and formal definition of discreteness notes the bijection between any set of discrete structures and the natural numbers. Put simply, any set of discrete things can be counted. This is true in the case of Nomo, but it should also be noted that any and all mappings are arbitrary with respect to numeric value. That is, the discreteness of Nomo identifiers and their parts has no association with quantity or order. Any glyph, string, or identifier can be mapped to *any* integer that is not already mapped to another glyph, string, or identifier.
 
-This intentionally excludes any means of distinguishing a string or relating identifiers by any non-discrete (continuous) means or attribute. There is no possible evaluation of *how similar* or *how close* two strings are. Rationally, one can evaluate discrete measures of similarity through such trivia has how many glyphs are shared between two strings, or count the total number of glyphs or strings in an identifier. But these measures of similarity have no significance in Nomo -- they do not convey meaning. Certainly it is meaningless to try to measure how similar two glyph types are to each other.
+This intentionally excludes any means of distinguishing a string or relating identifiers by any non-discrete (continuous) means or attribute. There is no possible evaluation of *how similar* or *how close* two glyphs are. Rationally, one can evaluate discrete measures of similarity between strings or identifiers through such trivia has how many glyphs are shared between two strings, or count the total number of glyphs or strings in an identifier. But these measures of similarity have no significance in Nomo -- they do not convey meaning.
 
 Strictly limiting identifiers to discrete patterns eliminates an infinite range of information that is often important in reality, from human communication to fundamental physics, for the benefit of also eliminating an infinite range of ambiguity.
 
 #### 4.1.2 Atomic
 
-The discrete identifiers of Nomo are in turn composed of discrete atoms -- glyphs. The identity of each atom (glyph) is strictly local and invariant. That is, the identification of the pattern (glyph type) that a particular glyph matches is strictly determined by that single glyph, and in turn a glyph has no substructure that has any meaning within Nomo. The identification of a complete string is in turn solely determined by the identification of each respective atom.
+The discrete structures of Nomo are all ultimately composed of discrete atoms -- glyphs. The identity of each atom (glyph) is strictly local and invariant. That is, the identification of the pattern (glyph type) that a particular glyph matches is strictly determined by that single glyph, and in turn a glyph has no substructure that has any meaning within Nomo. The identification of a complete string is in turn solely determined by the identification of each respective glyph.
 
-This intentionally excludes any means of distinguishing an identifier or relating identifiers by some context or composition that derives information from some combination of atoms, other than the specific structures defined in the Nomo specification. 
+This intentionally excludes any means of evaluating a string by composition or derivation of multiple glyphs, apart from the basic structure as a sequence.
 
-Once again, this eliminates an infinite range of emergent or compositional information which is hugely important in both human communication and fundamental physics, for the benefit of also eliminating an infinite range of complexity.
+Once again, this eliminates an infinite range of emergent or compositional information which is important in both human communication and fundamental physics, for the benefit of also eliminating an infinite range of complexity.
 
 #### 4.1.3 Sequential
 
-The identification of "which atom" within a **string** is strictly determined by sequence. The only meaningful concept is the ordinal of an glyph within the sequence. While the mapping of a given glyph type to an integer is arbitrary, the ordinal of a particular glyph within a string is strictly defined and maps directly to the natural numbers. There is a first glyph, a second glyph, etc. through the nth glyph of a string.
+The identification of "which atom" within a **string** is strictly determined by sequence. The only meaningful concept is the ordinal of a glyph within the sequence. While the mapping of a given glyph type to an integer is arbitrary, the ordinal of a particular glyph within a string is strictly defined and maps directly to the natural numbers. There is a first glyph, a second glyph, etc. through the nth glyph of a string.
 
-This intentionally excludes any other means of distinguishing a string or relating strings by any other spatial, conceptual, or mathematical relationship.
+This intentionally excludes any other means of distinguishing a string or relating strings by any other spatial, conceptual, or mathematical relationship. That is, there are many well-defined topologies which could be composed from discrete atoms. The only structure admitted in Nomo is a finite sequence.
 
-This too eliminates an infinite range of potential structural information for the benefit of also eliminating an infinite range of both complexity and ambiguity. Once again, note that a limited but powerful set of structural information **is** added through the definitions of composed identifiers.
+This too eliminates an infinite range of potential structural information for the benefit of also eliminating an infinite range of both complexity and ambiguity. Note that a limited but powerful set of structural information **is** added through the definitions of composed identifiers, but those structures are compositions of strings, not of glyphs.
 
 #### 4.1.4 Associative
 
-The nature of the structures defined at the identifier layer are described in detail in [**Nomo: Identifier Primitives**](./nomo-id-primitives.md). Those structures provide a limited set of ways in which to **associate** multiple strings to form a larger identifier. Most importantly, a **name** is a simple sequence of strings, while a **qualified resource name** is a set of names and other structures, where each part is associated with a specific predefined concept related to set theory: In short, a principal, a set, a subset, and an element.
+The nature of the structures defined at the identifier layer are described in detail in [**Nomo: Identifier Structures**](./nomo-id-structures.md). Those structures provide a limited set of ways in which to **associate** multiple strings to form a larger identifier. Most importantly, a **name** is a simple sequence of strings, while a **qualified resource name** is a set of names and other structures, where each part is associated with a specific predefined concept related to authentication or set theory: A principal, a set, a subset, and an element.
 
 #### 4.1.5 Context-free
 
@@ -234,19 +235,19 @@ Any system of pattern recognition that yields a different answer for the samenes
 
 A second illustration emphasizes that the identity of a glyph is independent of where it is found within a string. 
 
-Imagine a sequence of index cards. On the bottom of each card, a natural number is printed. On the top a glyph is printed.
+Imagine a sequence of index cards. On the bottom of each card, a different symbol is printed. On the top a glyph is printed.
 
 ```
 Glyph    A     A     A     A
 ------  ---   ---   ---   ---
-Card #   1     2     3     4
+Card     ♠     ♥     ♦     ♣
 ```
 
 Understanding the glyphs as a Nomo string, we have the sequence `( A, A, A, A )`, or four consecutive capital Latin letter "A"s.
 
 The cards themselves can be reordered in any of `4!` = 24 permutations. Regardless, because the same glyph is printed on each card, the resulting string of glyphs remains `( A, A, A, A )`.
 
-By definition, all 24 of these sequences are in Nomo the **same** string. The additional context denoted by the number on the bottom of each card is strictly out of scope. Any system of pattern recognition that recognizes that `A` is the only glyph used, but somehow also distinguishes `A-on-card-1` from `A-on-card-2`, is incompatible with Nomo.
+By definition, all 24 of these sequences are in Nomo the **same** string. The additional context denoted by the symbol on the bottom of each card, which does allow us to distinguish one card from another, is strictly out of scope for evaluating the glyphs themselves. Any system of pattern recognition that recognizes that `A` is the only glyph used, but somehow also distinguishes `A-on-♥` from `A-on-♦`, is incompatible with Nomo.
 
 ### 4.2 Violations and resolutions
 
@@ -260,9 +261,11 @@ While both situations present a challenge to Nomo's spartan design, they are ful
 
 #### 4.2.1 Compound glyphs
 
-In any of the mediums contemplated by the authors, including of course natural writing systems as encoded in Unicode, it is common for non-sequential clusters of information to be embedded in a otherwise sequential structure. 
+In any of the mediums contemplated by the authors, including of course natural writing systems as encoded in Unicode, it is common for non-sequential clusters of information to be embedded in an otherwise sequential structure. 
 
 A musical composition may contain overlapping sustained sounds from multiple instruments, or multiple tones from the same instrument. Military service ribbons are generally a one-dimensional sequence of colors encoded as a piece of ribbon, but occasionally contain two dimensional features such as angled bars or small pictograms. And writing systems often contain compound glyphs that either visually or even conceptually are a combination of other glyphs or annotations that may or may not appear independently in a sequence.
+
+In all these examples, there is a well defined sequence in time or space for the pattern as a whole, but at each location in that sequence there might be multiple overlapping values which are discrete and identifiable not ordered in relation to each other.
 
 These features of extant identifiers and writing systems present a challenge to the intentionally strict constraints in Nomo of atomic glyphs and context-free sequences. Nomo strictly prohibits glyph-specific attributes or multi-glyph rules, such as to express that the single glyph `ß` is equivalent to the two glyphs `ss` in some contexts, or to express that some base glyph plus multiple combining diacritic glyphs are equivalent regardless of the ordering of the trailing combining diacritic glyphs, which are in turn all equivalent to a single composed glyph, such as in the following Unicode sequences:
 
@@ -287,11 +290,11 @@ For the specific and intended case of digitized identifiers based on human writi
 
 #### 4.2.2 Associative attributes
 
-A common use case the authors anticipate is to construct an identifier that embeds a small map of named attributes. This can be very useful for identifying a particular record in some record set by its unique key-value pairs. Many systems may provide a single value that can uniquely identify a record, such as an `id`, `rowid` or similar user- or system-specified attribute. But this is not always the case. 
+A common use case the authors anticipate is to construct an identifier that embeds a small map of named attributes. For example, this can be very useful for identifying a particular record in some record set by its unique key-value pairs. Many systems may provide a single value that can uniquely identify a record, such as an `id`, `rowid` or similar user- or system-specified attribute. But this is not always the case.
 
 Imagine a situation where the only way--or the semantically preferable way--to uniquely identify a particular record is to note the values of each of four fields `domain`, `set`, `key`, and `version`. In this case we have four key-value pairs, which have no intrinsic ordering relative to each other. This yields `4!` = 24 possible orderings of the key-value pairs in an identifier which contains them, an apparent ambiguity when considering the strictly sequential, context-free evaluation of Nomo identifiers.
 
-This is resolved by the fact that Nomo natively describes an [associative array (map) structure](./nomo-id-primitives.md#7-map) which may be included in the value of some identifiers, and again distinguishes between the values of an identifier itself and the one or many ways in which an identifier may be serialized.
+This is resolved by the fact that Nomo natively describes an [associative array (map) structure](./nomo-id-structures.md#7-map) which may be included in the value of some identifiers, and again distinguishes between the values of an identifier itself and the one or many ways in which an identifier may be serialized.
 
 In this example we could use the common schema to *write down* one of these row identifiers in any number of ways that would all be valid:
 
@@ -314,13 +317,13 @@ However, none of the above *serializations* is a Nomo identifier itself. Instead
 
 The key-value pairs in a primitive Nomo map structure are by definition unordered, and two maps are compared to each other by matching the respective keys through the same exact simple glyph-sequence comparison. The ambiguity in forcing an unordered map into a single ordered string encoding does not exist in the identifier itself.
 
-Note there are no `:` ,`[`, `,`, or `=` glyphs at all in the identifier itself. As with key-value ordering, those are artifacts of the serialization process which is specific to the common schema.
+Note there are no `:` ,`[`, `,`, or `=` glyphs at all in the identifier itself in this example. As with key-value ordering, those are artifacts of the serialization process which is specific to the common schema.
 
 ## Appendix 1: Examples
 
-To the point, here are several examples of [qualified resource names](./nomo-id-primitives.md#9-qualified-resource-name) rendered in the [common schema](./nomo-common-schema.md). These have not been published by the organizations cited, but are instead included as examples of how QRNs could be used in context.
+To the point, here are several examples of [qualified resource names](./nomo-id-structures.md#10-qualified-resource-name) rendered in the [common schema](./nomo-common-schema.md). These have not been published by the organizations cited, but are instead included as examples of how QRNs could be used in context.
 
-### X1.1 Computing and digital record-keeping
+### X1.1 Computing and digital recordkeeping
 
 The immediate use cases for Nomo include computing and digital record keeping. The following examples illustrate possible uses of QRNs in this domain, while also illustrating the general purpose and semantic intent of the parts of a QRN.
 
@@ -332,7 +335,7 @@ ecma/es[11]::api:Object.prototype.toString
 
 - `ecma` is the [authority](#451-authority), indicating that the organization [Ecma International](https://www.ecma-international.org/) declares this identifier
 - `es` is the [set name](#452-set), denoting here the set of concepts described in the [ECMAScript language specification](https://tc39.es/ecma262/)
-- `[11]` is the [set key](#452-set), denoting the [11th version of the language spec (ECMAScript 2020)](https://262.ecma-international.org/11.0/)
+- `[11]` is the [set key](#452-set), denoting here the [11th version of the language spec (ECMAScript 2020)](https://262.ecma-international.org/11.0/)
 - `api` is the [group name](#453-group), denoting a group of identifiers which represent the global API, as defined in [Section 18 - The Global Object](https://262.ecma-international.org/11.0/#sec-global-object)
 - `Object.prototype.toString` is the three-part [element name](#454-element) [`object`, `prototype`, `toString`], denoting here the `toString` prototype method of the `Object` type, described in [19.1.3.6 Object.prototype.toString()](https://262.ecma-international.org/11.0/#sec-object.prototype.tostring).
 
@@ -406,11 +409,11 @@ This document shall be updated to major version 1 only when its status is regard
 
 #### X2.2.1 Major version
 
-Excluding [major version 0](#major-version-0), any major version of this document guarantees stability in the location and general content of each numbered section. 
+Excluding [major version 0](#major-version-0), any major version of this document guarantees stability in the location and general topic of each numbered section. 
 
 Within a major version, a numbered section may be struck but must still be physically present with appropriate annotation so that references to that section remain valid.
 
-Reassignment of an existing section number to a now topic requires a new major version of the document.
+Reassignment of an existing section number to a new topic requires a new major version of the document.
 
 #### X2.2.2 Minor version
 
@@ -418,7 +421,7 @@ The minor version of this document must be incremented with any meaningful chang
 
 #### X2.2.3 Patch version
 
-The patch version of this document may be incremented if the only changes are cosmetic, such as correcting typos or punctuation, or changing purely presentation 
+The patch version of this document may be incremented if the only changes are cosmetic, such as correcting typos or punctuation, or changing presentation annotations such as for print layout.
 
 ### X2.3 References to this document
 
@@ -428,4 +431,4 @@ References to specific parts of this document should use a section number, not a
 
 ### X2.4 Pagination
 
-Any version of this document may or may not include pagination or other physical layout annotations. These are not guaranteed to be stable between any version, and should not be relied on in references, except in references to a specific patch version such as when directly discussing physical layout.
+Any version of this document may or may not include pagination or other physical layout annotations. These are not guaranteed to be stable between any version, and should not be relied on in references.

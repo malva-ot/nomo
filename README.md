@@ -88,7 +88,7 @@ nomo includes three modules of specification:
 
 - [**Identifier primitives**](#4-identifier-primitives) - Abstract concepts that provide a mathematically complete description of an identifier
 - [**Schema primitives**](#5-schema-primitives) - Abstract concepts that describe how identifier primitives may be validated and mapped to or from strings
-- [**Common schema**](#6-common-schema) - An instance of a schema intended for general use in distributed computing and record-keeping
+- [**Common schema**](#6-common-schema) - An instance of a schema intended for general use in distributed computing and recordkeeping
 
 ### 1.3 Status
 
@@ -806,7 +806,7 @@ A common schema identifier is valid if and only if processing each string in the
 
 ##### 6.2.1.3 Other rules
 
-The common schema itself is defined primarily as a foundation for serialization and mutual intelligibility in distributed record-keeping, and particularly (but not exclusively) distributed computing. It is entirely expected that cooperating parties may define their own more restrictive validation rules in derived schemas, in the same way they may define [their own QRN semantics](#47-user-defined-qrn-semantics), while still leveraging the underlying encoding and decoding algorithms defined here in the common schema. 
+The common schema itself is defined primarily as a foundation for serialization and mutual intelligibility in distributed recordkeeping, and particularly (but not exclusively) distributed computing. It is entirely expected that cooperating parties may define their own more restrictive validation rules in derived schemas, in the same way they may define [their own QRN semantics](#47-user-defined-qrn-semantics), while still leveraging the underlying encoding and decoding algorithms defined here in the common schema. 
 
 For example, it would likely be desired to disallow empty name segments, as empty segments provide little semantic value, even if the common schema can safely encode them:
 
