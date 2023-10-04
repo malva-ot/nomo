@@ -11,7 +11,7 @@ This repository contains the current standards documents that constitute Nomo.
 |Document|Type|Version|Date|
 |-|-|-|-|
 |[Introduction](./nomo-intro.md)|descriptive|`0.18.0`|2023-09-14|
-|[Identifier Structures](./nomo-id-structures.md)|specification|`0.18.0`|2023-09-14|
+|[Identifier Structures](./nomo-id-structures.md)|specification|`0.19.0`|2023-09-29|
 |[Schemas](./nomo-schemas.md)|specification|`0.18.0`|2023-09-14|
 |[Common Schema](./nomo-common-schema.md)|specification|`0.18.0`|2023-09-14|
 

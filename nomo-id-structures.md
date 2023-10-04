@@ -1,6 +1,6 @@
 # Nomo: Identifier Structures
  
-version `0.18.0` • 2023-09-14
+version `0.19.0` • 2023-10-04
 
 ## 1. Introduction
 
@@ -16,7 +16,7 @@ Nomo identifier structures are abstract ontological or mathematical concepts. Th
  
 ### 1.2 Layers
 
-Nomo defines the identifier structures is four incremental layers. For additional conceptual background, see [Nomo: Introduction - Structural Principles](./nomo-intro.md#4-structural-principles). In addition, [references](#9-reference) constitute a fifth layer that facilitate communication and processing of identifiers and structures.
+Nomo defines the identifier structures in four incremental layers. For additional conceptual background, see [Nomo: Introduction - Structural Principles](./nomo-intro.md#4-structural-principles). In addition, [references](#9-reference) constitute a fifth layer that facilitate compact communication and processing of identifiers and structures.
 
 #### 1.2.1 Atomic (Glyphs)
  
@@ -34,9 +34,9 @@ Glyphs are assembled in sequences called strings:
 
 #### 1.2.3 Associative (Values)
 
-Strings can in turn be assembled in sequences called **tuples** or in associative **maps**. These more general structures are recursive, and can also contain **null** values or even full **QRNs**. Collectively, these structures are called **values**. 
+Strings can in turn be assembled in sequences called **tuples** or in associative **maps**. These more general structures can be nested, and can also contain **null** values or even full **QRNs**. Collectively, these structures are called **values**. 
 
-The definition of "value" is intrinsically circular to the definitions of "map", "tuple", and "QRN", because a value **is** a placeholder for a string, tuple, map, null, reference or QRN, while at the same time tuples, maps, and QRNs are compound and potentially recursive arrangements of values. 
+The definition of "value" is intrinsically circular to the definitions of "map", "tuple", and "QRN", because a value **is** a placeholder for a string, tuple, map, null, reference or QRN, while at the same time tuples, maps, and QRNs are compound and potentially nested arrangements of values. 
 
 Although the exact definition of **value** allows QRNs and references, the following four types are described as the incremental **associative** structure layer:
 
@@ -47,7 +47,7 @@ Although the exact definition of **value** allows QRNs and references, the follo
 
 #### 1.2.4 Semantic (Identifiers)
 
-Nomo is after all a standard for identifiers, and two semantic structures are defined for use directly as identifiers: 
+Two semantic structures are defined for use directly as identifiers:
 
   - [**name**](#4-name) - A simple sequence of zero or more strings
   - [**qualified resource name**](#10-qualified-resource-name) - A composition of names and values that constitutes a complete identifier
@@ -56,7 +56,7 @@ Nomo is after all a standard for identifiers, and two semantic structures are de
 
 This specification does introduce one final concept which is not an identifier value per se, but a well-defined means of incrementally composing structures and identifiers through substitution. 
 
-  - [**reference**](#9-reference) - A simple string key which maps to a full value previously defined. Reference values themselves a strings, composed of glyphs as any other string, but their meaning is context-dependent.
+  - [**reference**](#9-reference) - A simple string key which maps to a full value previously defined. The content of a reference is a simple string, composed of glyphs as any other string, but its meaning is context-dependent.
 
 #### 1.2.6 Identifier Terminology
 
@@ -93,7 +93,7 @@ The most basic task when evaluating identifiers is to determine whether two iden
 
 ##### 1.4.1.1 Same
 
-This specification includes many descriptions of how two given structures or identifiers may evaluated to be the **same** or not.
+This specification includes many descriptions of how two given structures or identifiers may evaluated to be the **same** or not. This concept is described throughout this specification as a binary operator called `same`, which has a left and right operand, and evaluates to true or false.
 
 ##### 1.4.1.2 Equivalent
 
@@ -152,6 +152,10 @@ Between compatible glyph sets, a mutually mapped glyph type in one set is **equi
 
 When comparing two identifiers, where the respective glyph sets of the two identifiers are compatible, a particular glyph in one identifier is **equivalent** to a particular glyph in another identifier if the glyph type that the glyph in the first identifier represents is equivalent to the glyph type which the glyph in the other identifier represents.
 
+#### 2.5.1 Implicit Compatibility
+
+Every compatibility mapping is a set of mappings from a glyph type in one set to a glyph type in another set. Any two glyph sets that do not have any glyph equivalence mappings can still be understood to have a compatibility mapping which is an empty set. On this basis, [empty values](#54-empty-values) of the same [type](#53-type-and-comparison) are always evaluated as the same, regardless of the medium of glyph sets of the respective values.
+
 ## 3. String
 
 ### 3.1 Definition 
@@ -169,12 +173,11 @@ All strings have the property of length, but length has no significance within N
 ### 3.3 Comparison
 
 The only meaningful evaluation between two Nomo strings is whether they are the same or different. Two strings are the same if and only if:
-
- - The glyph sets of the two strings are the same or are compatible 
+ 
  - The two strings have the same number of glyphs
  - For all *n* from 1 to the length of the strings, the glyph at ordinal *n* in one string is the same or equivalent to the glyph at the same ordinal in the other string
 
-In the special case of zero-length strings, two strings are the same if and only if their respective glyphs sets are the same or are compatible. Conversely, zero-length strings of two incompatible glyph sets are not the same.
+For any two strings that have zero glyphs, there are no individual glyphs to compare, and so the the two strings are always considered equal even if the two strings are associated with different glyph sets and there are no glyph equivalence mappings between the two glyphs.
 
 ## 4. Name
 
@@ -192,7 +195,7 @@ In other words, a name definitely specifies the ordering of its segments, but on
 
 An empty name with zero segments is conceptually valid. Likewise a name may have a non-zero count of segments where one or all segments are themselves empty strings. 
 
-Names may *not* contain null segments. All segments of a name are strings, and Nomo defines the null value to have a different type than string values. 
+Names may *not* contain null segments. All segments of a name are strings, and Nomo defines the [null value](#8-null) to have a different type than string values. 
 
 ### 4.3 Properties
 
@@ -202,26 +205,23 @@ All names have the property of count (the number of constituent segments) and of
 
 The only meaningful evaluation between two Nomo names is whether they are the same or different. Two names are the same if any only if:
 
- - The glyph sets of the two names are the same or are compatible 
  - The two names have the same count of segments
  - For all *n* from 1 to the count of segments, the string of segment *n* in one name is the same as the string of segment *n* in the other name, according to the rules described in [3. String](#3-string).
-
-It follows that:
- - Two names composed solely of zero-length segments are the same if and only if they have the same count of segments, and the glyph sets of the names are the same or compatible
- - Two names that have zero segments are the same if and only if the glyph sets of the names are the same or compatible
+ 
+For any two names that have no segments, OR are composed of solely of empty segments,  there are no individual glyphs to compare. Such names are compared solely on the count of segments, even if the two names are associated with different glyph sets and there are no glyph equivalence mappings between the two glyphs.
 
 ## 5. Value 
 
 ### 5.1 Definitions
 
-A **value** is a compound identifier part composed of one of the following:
+A **value** is an instance of any one of the following:
 
  - **string**    - A single string as defined above
  - **tuple**     - A sequence of values
  - **map**       - An unordered set of key-value pairs
  - **null**      - The absence of any value
- - **reference** - A single, non-empty string whose literal value maps to an expanded value in the local context of a QRN 
- - **QRN**       - A QRN may itself be used as a value in a tuple or map
+ - **reference** - A single, non-empty string whose literal value maps to a predefined key-value pair
+ - **QRN**       - A fully qualified semantic identifier
 
 Strings are described above, while the remaining value types are described in the sections that follow.
 
@@ -233,7 +233,7 @@ Values provide extensibility to the qualified resource name concept by providing
  
 All values have a type: string, tuple, map, null, reference, or QRN. The possible values of each type are strictly non-overlapping. As described in [6: Tuple](#64-equivalence-to-name-concept), names are in fact a special case of tuples, so names are also valid values with type tuple.
  
-Two values are the same if and only if they are composed from the same or compatible glyph sets, they have the same type (with limited exceptions noted immediately below), and the constituent parts of the value are also the same according the rules in this specification:
+Two values are the same if and only if they have the same type (with limited exceptions noted immediately below), and the constituent parts of the value are also the same according the rules in this specification:
  
   - [3.3 String: Comparison](#33-comparison)
   - [6.3 Tuple: Comparison](#63-comparison)
@@ -249,7 +249,7 @@ To emphasize, this means that the `same` operand is fully defined for any two op
 Nomo defines three implicit and directional **lifting** operations which allow comparison between values of different types. 
 
 - A **string** can be lifted to a **name**, where the resulting name contains a single segment whose value is the original string.
-- A **name** can be lifted to a **QRN**, where the resulting QRN contains only an element name whose value is the original name.
+- A **name** can be lifted to a **QRN**, where the resulting QRN contains only an element name part whose value is the original name.
 - By composition, a **string** can be lifted to a **QRN**, where the resulting QRN contains only an element name, which has a single segment whose value is the original string.
 
 Lifting implicitly occurs when a string is compared to a name, a name is compared to a QRN, or a string is compared to a QRN. It does not matter if the more primitive value is the left or right operand.
@@ -260,17 +260,38 @@ While reference values have string content, they are not themselves strings and 
 
 The string, tuple, map, and QRN types each have an empty value - a string with zero glyphs, a tuple with zero values, a map with zero key-value pairs, and a QRN with no defined parts. References do not allow an empty value (a reference key cannot be an empty string), although the target of a reference may be a null or empty value.
 
-As noted above, for two values to be considered the same they must have the same type and the same or compatible glyph sets. Therefore, even for the same glyph set, the empty string, empty tuple, and empty map are three distinct values. In addition, the null value has a different type and is therefore a distinct value which is not the same as any of the empty values of the string, tuple, or map types.
+Following the pattern of empty strings and names, any two empty values of the same type are always evaluated to be the same.
 
-### 5.5 Root values
+### 5.5 Identifier-Value
+
+An **identifier-value** is defined as a subset of **value**, restricted to the following types:
+
+ - string
+ - name
+ - QRN
+ - reference
+
+A reference used as an identifier-value, whose fully expanded value is not a string, name, or QRN, is an invalid reference.
+
+### 5.6 Name-Value
+
+A **name-value** is defined as subset of **value**, restricted to the following types:
+
+ - string
+ - name 
+ - reference
+
+A reference used as name-value, whose fully expanded value is not a string or name, is an invalid reference.
+
+### 5.7 Root values
 
 In a free evaluation context any type of [**value**](#5-value) can be used as a root value by itself.
 
 Nomo **does** specifically define **names** and **QRNs** as the two value types that are intended to be used as identifiers. So when a root value is a QRN or a name, then Nomo defines this to represent an identifier -- a symbolic datum used to denote some other thing.
 
-When a root value is any other type, Nomo has no opinion about what this *means*. Nomo simply asserts that all six types of value are well defined and that it is mechanically valid to use or evaluate any of the six types by themselves.
+When a root value is any other type, Nomo has no opinion about what this *means*. Nomo simply asserts that all six types of value are well defined and that it is mechanically valid to use, represent, or evaluate any of the six types by themselves.
  
-### 5.6 Numeric or other value semantics
+### 5.8 Numeric or other value semantics
 
 The tuple and map types allow for values that resemble general purpose data structures used in digital data storage, processing and exchange. That is not their purpose, and Nomo is not designed to be a universal data structure representation standard.
 
@@ -293,11 +314,14 @@ Tuples have the property of count (the number of elements), but this property ha
 ### 6.3 Comparison
 
 Two tuples are the same if and only if:
-
-- The glyph sets of the two tuples are the same or are compatible 
+ 
 - The two tuples have the same count of elements
 - All references contained in either tuple can be fully expanded
 - For all *n* from 1 to the count of elements, the fully expanded value of element *n* in one tuple is the same as the value of element *n* in the other tuple, according to the rules described in this specification.
+
+As noted above, two empty tuples are always evaluated to be the same.
+
+Per other elements of this specification, any tuple containing an invalid reference is non-comparable, even to itself. Applying the `same` operand to any two tuples which contain an invalid reference will always return false. Implementations and evaluation contexts that allow comparing a single tuple instance to itself must return `false` for a tuple containing an invalid reference: A tuple containing an invalid reference is not even the same as itself.
 
 ### 6.4 Equivalence to Name concept
 
@@ -307,9 +331,9 @@ A **name** therefore **is** a tuple where all the values are strings, and likewi
 
 Note that the null value is not a string, so a tuple which contains a null element is not a name, and likewise a name can contain an empty string segment but cannot contain a null segment.
 
-The identity relation between a name and a tuple of strings has no meaningful implication for QRNs, which are the ultimate purpose of this specification. However, where software implementations or logical analyses of Nomo allow or execute comparisons between arbitrary identifiers, they must evaluate a "tuple" value to be the same as a "name" value if the underlying sequences of strings of the respective values would be evaluated as the same.
+The identity relation between a name and a tuple of strings has no meaningful implication for QRNs, which are the ultimate purpose of this specification. However, where software implementations or logical analyses of Nomo allow or execute comparisons between arbitrary identifier structures, they must evaluate a "tuple" value to be the same as a "name" value if the underlying sequences of strings of the respective values would be evaluated as the same.
 
-This identity also applies to [lifting](#531-lifting): If `same` is applied to two operands, where one is a QRN and one is a tuple, and the tuple is also a name (all segments are strings), then the tuple is lifted to a QRN before comparison.
+This identity also applies to [lifting](#531-lifting): If `same` is applied to two operands, where one is a QRN and one is a tuple, and the tuple is also a name (all segments are strings), then the tuple is lifted to a QRN before comparison. Likewise if a tuple is compared to a string, and the tuple is also a name (all segments are strings), then the string is lifted to a name before comparison.
 
 ## 7. Map
 
@@ -327,24 +351,27 @@ Maps have the property of count (the number of key-value pairs), but this proper
 
 Two maps are the same if and only if:
 
- - The glyph sets of the two maps are the same or are compatible 
  - The two maps have the same count of key-value pairs
  - All references contained in either map can be fully expanded
  - For each key *k* in one map, the same key exists in the other map, and the fully expanded value associated with *k* in the first map is the same as the fully expanded value associated with *k* in the other map, according to the rules described in this specification.
 
-### 7.4 Subset relations
+As noted above, two empty maps are always evaluated to be the same.
 
-According to the definitions above, any given pair of maps can also be evaluated to determine if there is a strict subset or superset relation between the two maps. Although well-defined, such relations have no particular meaning or significance within Nomo. 
+Per other elements of this specification, any map containing an invalid reference is non-comparable, even to itself. Applying the `same` operand to any two map which contain an invalid reference will always return false. Implementations and evaluation contexts that allow comparing a single map instance to itself must return `false` for a map containing an invalid reference: A map containing an invalid reference is not even the same as itself.
+
+### 7.4 Set relations
+
+According to the definitions above, any given pair of maps can also be evaluated to determine any number of set relations between the two maps based on their constituent key-value pairs. Although mathematically well-defined, such relations have no particular meaning or significance within Nomo. 
 
 ## 8. Null
 
-A **null** value is the absence of any value. Although the null value does not contain any glyphs, it is still defined in reference to an associated glyph set.
+A **null** value is the absence of any value. All values, including null values, must be associated with a defined glyph set, but because null values contain no glyphs the choice of glyph set is irrelevant for comparison.
 
 ### 8.1 Comparison
 
-Two null values are the same if and only if the glyph sets of the values are the same or compatible. 
+Any two null values are always evaluated to be the same. 
 
-As noted above, a null value is not the same as an empty string, map, or tuple value, even if the respective glyph sets are the same or compatible.
+As noted above, a null value is not the same as an empty string, empty map, or empty tuple, even if the respective glyph sets are the same or compatible.
 
 ## 9. Reference
 
@@ -368,7 +395,7 @@ For clarity in discussion of references, the following terms are used:
 
 ### 9.4 Context Reference Map
 
-The definition of a reference implies a context map which contains the defined references. 
+The definition of a reference implies a context map which contains the defined reference entries. 
 
 A context reference map is an ordered list of key-value entries. The key of each entry is a non-empty string, while the value is any value type. The key and the value of a single entry must use the same glyph set, but each entry in the map may use a different glyph set. 
 
@@ -392,9 +419,11 @@ If the reference target value has a different glyph set than the host structure,
 
 ### 9.6 Comparison
  
-Asking whether two reference values are the same is defined to mean asking whether their fully expanded values are the same. The answer may be false even if the literal strings of the respective reference values are the same, and may be true even if the literal strings of the respective reference values are not the same.
+Asking whether two references are the same is defined to mean asking whether their fully expanded values are the same. The answer may be false even if the literal strings of the respective reference values are the same, and may be true even if the literal strings of the respective reference values are not the same.
 
-All **invalid references** are non-comparable. When either or both operands of the `same` operator are an invalid reference, the result is always false, even if both operands are references with the same glyph set and the same literal string values.
+All **invalid references** are non-comparable, even to themselves. When either or both operands of the `same` operator are an invalid reference, the result is always false, even if both operands are references with the same glyph set and the same literal string values. 
+
+Implementations and evaluation contexts that allow comparing an instance of an invalid reference to itself should return false -- an invalid reference is not even the same as itself.
 
 ### 9.7 Limitations
 
@@ -402,9 +431,11 @@ All **invalid references** are non-comparable. When either or both operands of t
 
 Reference expansion does not represent or allow merging of compound structures. 
 
-A tuple which contains a reference, where the target is itself a tuple, will become a nested tuple when expanded. The elements of the reference target are not merged or flattened into the host tuple.
+A tuple which contains a reference, where the target is itself a tuple, will become a nested tuple when expanded. The elements of the reference target are not merged or flattened into the host tuple. 
 
-Likewise a map which contains a value that is a reference, where the reference target is itself a map, will become a nested map when expanded. This is doubly true, because it is not possible to define a reference target value that is a single disembodied map entry, nor is it possible to use a reference as a placeholder for a key-value *entry* in an host map.
+Likewise a map which contains a value that is a reference, where the reference target is itself a map, will become a nested map when expanded. Note that it is not possible to define a reference target value that is a single disembodied map entry, nor is it possible to use a reference as a placeholder for a key-value *entry* in an host map.
+
+In other words, Nomo has no support for array or object destructuring concepts such as in many contemporary programming languages.
 
 #### 9.7.2 Substitution
 
@@ -422,21 +453,23 @@ A QRN is composed of one optional *annotation* (schema) and six optional *parts*
 
 |Part|Type|Description|
 |-|-|-|
-|**schema**|**value**|An arbitrary value identifying a deterministic algorithm for validating the QRN|
+|**schema**|**identifier‑value**|An identifier for a deterministic algorithm for validating the QRN|
 |**authority**|**string**|An arbitrary string identifying the universe of a set. In general, the principal which declares the identifier|
-|**set name**|**name**|The identifier of a **set** itself|
-|**set key**|**value**|A further qualifier on the identity of a **set** itself|
-|**group name**|**name**|The identifier of a proper **subset** within a set|
-|**element name**|**name**|The identifier for a specific **element** within a set|
-|**element key**|**value**|A further qualifier on the identity of an **element** within a set|
- 
+|**set&nbsp;name**|**name**|The identifier of a **set** itself|
+|**set&nbsp;key**|**value**|A further qualifier on the identity of a **set** itself|
+|**group&nbsp;name**|**name**|The identifier of a proper **subset** within a set|
+|**element&nbsp;name**|**name**|The identifier for a specific **element** within a set|
+|**element&nbsp;key**|**value**|A further qualifier on the identity of an **element** within a set|
+
 ### 10.1 Schema
 
-If present, the schema annotation denotes an algorithm which can be applied to the QRN to determine if it is valid according to some arbitrary but deterministic rule set. This specification provides no further details about the actual existence or implementation of any such algorithm, but [Nomo: Schemas](./nomo-schemas.md) describes such algorithms in detail.
+If present, the schema annotation denotes an algorithm which can be applied to the QRN to determine if it is valid according to some arbitrary but deterministic rule set. This specification provides no further details about the actual existence or implementation of any such algorithm, but [Nomo: Schemas](./nomo-schemas.md) describes schemas in detail.
 
 Consistent with the rest of this specification, a schema cannot alter the *meaning* of the content of the QRN, it simply denotes the existence of an additional unary boolean operator `valid`. The result of applying that operator has no effect on the [comparison operators](#11-relations) (`same`, `in`, `contains`).
 
-As such, the content of the schema value is not part of the QRN content itself, and so is excluded in all discussions of relations and comparison.
+In implementations and evaluation contexts, it is not necessary to understand or even examine the schema annotation of a QRN in order to apply the `same`, `in`, or `contains` operands. A schema annotation which contains an invalid reference does not cause the QRN it annotates to be considered invalid.
+
+As such, the content of the schema value is not part of the QRN content itself, and so is excluded in all discussions below of relations and comparison.
 
 #### 10.1.1 Bound Identifier
 
@@ -444,7 +477,7 @@ When a QRN does include a schema annotation, the QRN is said to be **bound**.
 
 #### 10.1.2 Structure
 
-The schema annotation is a generic [value](#5-value). It can therefore contain a reference value, and that reference may be expanded to any concrete type, including a full QRN. In fact, it is the general intent that schema annotations contain references which map to full QRNs which in turn unambiguously identify some well-defined schema.
+The schema annotation is a generic [identifier-value](#55-identifier-value). It can therefore contain a reference value, and that reference may be expanded to any concrete identifier-value type, including a full QRN. In fact, it is the general intent that schema annotations contain references which map to full QRNs which in turn unambiguously identify some well-defined schema.
 
 ### 10.2 Authority
 
@@ -452,7 +485,7 @@ The authority is the root disambiguating context of a qualified resource name. N
 
 ### 10.3 Set
 
-The set name and key represent the identifier of a set itself. The QRN concept itself as defined in this specification does not require that a set name be present if a set key is present. The set name and key are collectively called the set identifier.
+The **set name** and **set key** together represent the identifier of a set itself. The QRN concept itself as defined in this specification does not require that a set name be present if a set key is present. The set name and key are collectively called the **set identifier**.
 
 When both a set name and a set key are present, this specification defines this to mean that the set name represents a set of sets which share some unifying character or attribute, while each unique key value appended to the set name represents a specific instance of such a set.
 
@@ -460,11 +493,11 @@ A common intended usage is to use the set name to denote a software, data, or ad
 
 ### 10.4 Group
 
-The group name represents the identifier of a proper subset within the set identified by the set identifier. A QRN containing only a group name expresses the concept of an identified subset independent of any particular set to which it may belong.
+The **group name** represents the identifier of a proper subset within the set identified by the set identifier. A QRN containing only a group name expresses the concept of an identified subset independent of any particular set to which it may belong.
 
 ### 10.5 Element
 
-The element name and element key represent the identifier of a specific element within the set identified by the set identifier or the subset identified by the group name. The QRN concept itself as defined in this specification does not require that an element name be present if an element key is present. The element name and element key are collectively called the element identifier.
+The **element name** and **element key** represent the identifier of a specific element within the set identified by the set identifier or the subset identified by the group name. The QRN concept itself as defined in this specification does not require that an element name be present if an element key is present. The element name and element key are collectively called the **element identifier**.
 
 When both an element name and an element key are present, this specification defines this to mean that the element name represents a set of elements which share some unifying character or attribute, while each unique key value appended to the element name represents a specific instance of such an element.
 
@@ -474,11 +507,11 @@ A common intended usage is to use the element name to denote a resource collecti
 
 ### 10.6 Empty and Missing Parts
 
-As section [5.4 Empty Values](#54-empty-values) describes, the null value is not the same as the empty value of string, tuple, or map. It follows that the empty value of a given part of a QRN is not the same as a missing value for the same part: a QRN may include an authority whose value is the empty string of the glyph set used by the QRN, and this is different from a QRN which uses the same glyph set but has no authority part.
+As section [5.4 Empty Values](#54-empty-values) describes, the null value is not the same as the empty value of string, tuple, or map. It follows that the an value used in a given part of a QRN is not the same as a missing value for the same part: a QRN may include an authority whose value is the empty string, and this is different from a QRN which has no authority part.
 
 An explicit null value for a set key or element key is defined to have the same meaning as a missing key part. In addition, while neither string nor name values may themselves be null, a QRN may have a *missing* authority, set name, group name, or element name. It is conceptually equivalent to say that any of these parts is "null" or "undefined". 
 
-To reiterate, all of the following statements are valid and equivalent:
+To illustrate, all of the following statements are valid and equivalent:
 
 - "This QRN does not have an authority part"
 - "The authority part of this QRN is missing"
@@ -489,7 +522,6 @@ To reiterate, all of the following statements are valid and equivalent:
 
 Two QRNs are the same if and only if:
 
-- The glyph sets of the two QRNs are the same or are compatible
 - All references contained in any of the six parts of either QRN can be fully expanded
 - For each of the six parts of a QRN, the part is undefined in both QRNs, OR the part is defined in both QRNs and the corresponding fully expanded values are the same according to the rules defined in this specification
 
@@ -505,13 +537,13 @@ To reiterate, the schema annotation of a QRN has no effect at all on any of the 
 
 As noted in the sections above, Nomo does not define any relationship or comparison between string, tuple, map, null, or reference values except for sameness. One can make mathematically objective observations such as that all values within one tuple also appear in another tuple, or that two strings are the same length, but these mathematical relationships have no semantic meaning or significance in Nomo.
 
-As an contrasting illustration, consider an internet domain name such as `mail.example.com` as represented by a Nomo name with the ordered segments (`mail`, `example`, `com`). The internet domain name system as centrally coordinated by IANA explicitly does define subset semantics such that `mail.example.com` is definitely a "subdomain" of `example.com`, which is itself a member of the "top level domain" `com`.
+As a contrasting illustration, consider an internet domain name such as `mail.example.com` as represented by a Nomo name with the ordered segments (`mail`, `example`, `com`). The internet domain name system as centrally coordinated by IANA explicitly does define subset semantics such that `mail.example.com` is definitely a "subdomain" of `example.com`, which is itself a member of the "top level domain" `com`.
 
 But Nomo itself defines no semantic relationship between the names (`mail`, `example`, `com`), (`example`, `com`), and (`com`). It only concludes that they are different names.
 
 ### 11.2 QRN relations
 
-In addition to sameness, Nomo itself **does** define one additional boolean complementary comparison relationship between QRNs. This comparison is called **in** or **contains**. One formulation expresses whether a QRN is **in** the domain of possible identifiers denoted by a second QRN. The complementary formulation expresses whether the domain of possible identifiers denoted by a QRN **contains** another QRN.
+In addition to sameness, Nomo itself **does** define one additional boolean complementary comparison relationship between QRNs. This comparison is called **in** or **contains**. One formulation expresses whether a QRN is **in** the domain of possible identifiers relative to a second QRN. The complementary formulation expresses whether the domain of possible identifiers relative to a QRN **contains** a second QRN.
 
 #### 11.2.1 Operators
 
@@ -574,10 +606,10 @@ The descriptions below do use several other set relation symbols including union
 
 ### 11.3 Authority relations
 
-|Relation|||||Description|
-|-|:-:|:-|:-:|:-|-|
-|`A/*`|`∩`|`B/*`|`=`|`∅`|The domains of any two authorities are disjoint|
-|`A/*`|`∈`|`A/`|||All identifiers relative to an authority are in the authority's domain| 
+|Relation|Description|
+|-|-|
+|`A/*`&nbsp;&nbsp;`∩`&nbsp;&nbsp;`B/*`&nbsp;&nbsp;`=`&nbsp;&nbsp;`∅`|The domains of any two authorities are disjoint|
+|`A/*`&nbsp;&nbsp;`∈`&nbsp;&nbsp;`A/`|All identifiers relative to an authority are in the authority's domain| 
   
 ### 11.4 Set relations
   
@@ -585,29 +617,29 @@ The descriptions below do use several other set relation symbols including union
 
 An unkeyed set is a QRN with a set name but no set key.
 
-|Relation|||||Description|
-|-|:-:|:-|:-:|:-|-|
-|`x::*`|`∩`|`y::*`|`=`|`∅`|The domains of two set names are disjoint|
-|`x::*`|`∈`|`x::`|||All subsets and elements relative to a set name without a key are in the domain of that unkeyed set name|
+|Relation|Description|
+|-|-|
+|`x::*`&nbsp;&nbsp;`∩`&nbsp;&nbsp;`y::*`&nbsp;&nbsp;`=`&nbsp;&nbsp;`∅`|The domains of two set names are disjoint|
+|`x::*`&nbsp;&nbsp;`∈`&nbsp;&nbsp;`x::`|All subsets and elements relative to a set name without a key are in the domain of that unkeyed set name|
   
 #### 11.4.2 Keyed sets
 
 A keyed set is a QRN with a both a set name and a set key.
 
-|Relation|||||Description|
-|-|:-:|:-|:-:|:-|-|
-|`x[1]::*`|`∩`|`x[2]::*`|`=`|`∅`|The sets denoted by two different key values relative to the same set name are disjoint|
-|`x[1]::*`|`∈`|`x[1]::`|||All subsets and elements relative to a set name with a key are in the domain of that keyed set name|
+|Relation|Description|
+|-|-|
+|`x[1]::*`&nbsp;&nbsp;`∩`&nbsp;&nbsp;`x[2]::*`&nbsp;&nbsp;`=`&nbsp;&nbsp;`∅`|The sets denoted by two different key values relative to the same set name are disjoint|
+|`x[1]::*`&nbsp;&nbsp;`∈`&nbsp;&nbsp;`x[1]::`|All subsets and elements relative to a set name with a key are in the domain of that keyed set name|
  
 #### 11.4.3 Relation between keyed and unkeyed sets
 
 The relation between a QRN with a keyed set name and a QRN with an unkeyed set name is more subtle, but is still well defined.
 
-|Relation|||||Description|
-|-|:-:|:-|:-:|:-|-|
-|`x[*]::*`|`∈`|`x::`|||All set keys relative to the same set name are in the domain of the set name without a key|
-|`x::*`|`∩`|`x[*]::`|`=`|`∅`|The subsets and elements relative to a set name without a key are disjoint the the set of keyed sets relative to that same set name|
-|`x::*`|`∪`|`x[*]::`|`≡`|`x::`|The union of the subsets and elements relative to a set name without a key with the set of keyed sets relative to that same set name exactly equals the entire set of possible identifiers relative to the unkeyed set name.<br><br>In other words, the subsets and elements relative to an unkeyed set name along with the set of keyed sets relative to that set name form a partition over the identifier domain of the unkeyed set name.|
+|Relation|Description|
+|-|-|
+|`x[*]::*`&nbsp;&nbsp;`∈`&nbsp;&nbsp;`x::`|All set keys relative to the same set name are in the domain of the set name without a key|
+|`x::*`&nbsp;&nbsp;`∩`&nbsp;&nbsp;`x[*]::`&nbsp;&nbsp;`=`&nbsp;&nbsp;`∅`|The subsets and elements relative to a set name without a key are disjoint the the set of keyed sets relative to that same set name|
+|`x::*`&nbsp;&nbsp;`∪`&nbsp;&nbsp;`x[*]::`&nbsp;&nbsp;`≡`&nbsp;&nbsp;`x::`|The union of the subsets and elements relative to a set name without a key with the set of keyed sets relative to that same set name exactly equals the entire set of possible identifiers relative to the unkeyed set name.<br><br>In other words, the subsets and elements relative to an unkeyed set name along with the set of keyed sets relative to that set name form a partition over the identifier domain of the unkeyed set name.|
 
 #### 11.4.4 Anonymous set key
 
@@ -615,16 +647,16 @@ An anonymous set key is a QRN with a set key but no set name. While many schemas
 
 However, Nomo defines the domains of any anonymous set to be non-comparable for the in/contains operator. The same operator is still defined and may return true when all parts of a QRN containing an anonymous set key are the same, per the rules described in this specification.
 
-|Relation|||Description|
-|-|:-:|:-|-|
-|`[1]::*`|`∉`|`[1]::`|A QRN with an anonymous set key and additional parts defined is not in the domain of any other QRN, even a QRN with the same anonymous set key|
+|Relation|Description|
+|-|-|
+|`[1]::*`&nbsp;&nbsp;`∉`&nbsp;&nbsp;`[1]::`|A QRN with an anonymous set key and additional parts defined is not in the domain of any other QRN, even a QRN with the same anonymous set key|
 
 ### 11.5 Group relations
 
-|Relation|||||Description|
-|-|:-:|:-|:-:|:-|-|
-|`g:*`|`∩`|`h:*`|`=`|`∅`|The domains of two group names are disjoint|
-|`g:*`|`∈`|`g:`|||All identifiers relative to a group name are in the group's domain| 
+|Relation|Description|
+|-|-|
+|`g:*`&nbsp;&nbsp;`∩`&nbsp;&nbsp;`h:*`&nbsp;&nbsp;`=`&nbsp;&nbsp;`∅`|The domains of two group names are disjoint|
+|`g:*`&nbsp;&nbsp;`∈`&nbsp;&nbsp;`g:`|All identifiers relative to a group name are in the group's domain| 
 
 ### 11.6 Element relations
 
@@ -632,33 +664,33 @@ However, Nomo defines the domains of any anonymous set to be non-comparable for 
 
 Given two QRNs which contain an element name but no element key, the in/contains operators applied to these QRNs will never evaluate to true. There is no further qualification possible without an element key.
 
-|Relation|||Description|
-|-|-|-|-|
-|`e*`|`=`|`∅`|The set of more qualified QRNs relative to an unkeyed element (excluding element keys) is the empty set. I.e. it is not possible to construct a more qualified QRN with an unkeyed element name relative to any other QRN with an unkeyed element name|
+|Relation|Description|
+|-|-|
+|`e*`&nbsp;&nbsp;`=`&nbsp;&nbsp;`∅`|The set of more qualified QRNs relative to an unkeyed element (excluding element keys) is the empty set. I.e. it is not possible to construct a more qualified QRN with an unkeyed element name relative to any other QRN with an unkeyed element name|
 
 #### 11.6.2 Keyed elements
 
 Given two QRNs which both contain an element name and an element key,  the in/contains operators applied to these QRNs will never evaluate to true. There is no further qualification possible.
 
-|Relation|||Description|
-|-|-|-|-|
-|`e[1]*`|`=`|`∅`|The set of more qualified QRNs relative to an keyed element is the empty set. I.e. it is not possible to construct a more qualified QRN relative to any QRN with a keyed element name|
+|Relation|Description|
+|-|-|
+|`e[1]*`&nbsp;&nbsp;`=`&nbsp;&nbsp;`∅`|The set of more qualified QRNs relative to an keyed element is the empty set. I.e. it is not possible to construct a more qualified QRN relative to any QRN with a keyed element name|
  
 #### 11.6.3 Relation between keyed and unkeyed elements
 
-|Relation|||Description|
-|-|:-:|:-|-|
-|`e[*]`|`∈`|`e`|All element keys relative to the same element name are in the domain of the element name without a key|
+|Relation|Description|
+|-|-|
+|`e[*]`&nbsp;&nbsp;`∈`&nbsp;&nbsp;`e`|All element keys relative to the same element name are in the domain of the element name without a key|
 
 #### 11.6.4 Anonymous element keys
 
 An anonymous element key is a QRN with an element key but no element name. While many schemas may define rules to disallow such QRNs, they are mechanically valid with respect to this specification.
  
-Because it is not possible to further qualify a QRN beyond the element key, not QRN with an element key is in the domain of any other QRN with an element key, including when there is no element name defined.
+Because it is not possible to further qualify a QRN beyond the element key, no QRN with an element key is in the domain of any other QRN with an element key, including when there is no element name defined.
 
-|Relation|||Description|
-|-|-|-|-|
-|`[1]*`|`=`|`∅`|The set of more qualified QRNs relative to an anonymous element key is the empty set. I.e. it is not possible to construct a more qualified QRN relative to any QRN with an anonymous element key|
+|Relation|Description|
+|-|-|
+|`[1]*`&nbsp;&nbsp;`=`&nbsp;&nbsp;`∅`|The set of more qualified QRNs relative to an anonymous element key is the empty set. I.e. it is not possible to construct a more qualified QRN relative to any QRN with an anonymous element key|
 
 ### 11.7 Lifting in subset comparisons
 
@@ -692,5 +724,3 @@ Nomo itself defines only that
 - the group and element parts of all three QRNs (`api:Object`) are the same
 
 Humans are free outside of Nomo to recognize or even formally define a semantic equivalence or relatedness between the three identifiers as all relating to the concept of the `Object` type within JavaScript / ECMAScript. These semantics are just not part of Nomo itself.
- 
-
